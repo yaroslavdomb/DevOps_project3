@@ -18,41 +18,46 @@
                 <img src="hotel.jpg" alt="Hotel" class="hotel-photo" />
 
                 <form>
-                    <div>
-                        <label for="guest-name">Name:</label>
-                        <input
-                            type="text"
-                            id="guest-name"
-                            placeholder="input your full name"
-                            pattern="[\p{L}\s]+"
-                            aria-describedby="name-hint"
-                        />
-                        <span id="name-hint" style="display: none">Only letters and space allowed</span>
-                    </div>
-                    <div>
-                        <label for="guest-email">Email:</label>
-                        <input type="email" id="guest-email" aria-describedby="email-hint" />
-                    </div>
-                    <div>
-                        <label for="check-in-date">check-In</label>
-                        <input type="datetime-local" id="check-in-date" />
-                    </div>
-                    <div>
-                        <label for="check-out-date">check-Out</label>
-                        <input type="datetime-local" id="check-out-date" />
-                    </div>
-                    <button type="submit">Reserve</button>
+                    <fieldset>
+                        <legend>Reservation</legend>
+                        <div>
+                            <label for="guest-name">Name:</label>
+                            <input
+                                type="text"
+                                id="guest-name"
+                                placeholder="input your full name"
+                                pattern="[\p{L}\s]+"
+                                aria-describedby="name-hint"
+                            />
+                            <span id="name-hint" style="display: none">Only letters and space allowed</span>
+                        </div>
+                        <div>
+                            <label for="guest-email">Email:</label>
+                            <input type="email" id="guest-email" aria-describedby="email-hint" />
+                        </div>
+                        <div>
+                            <label for="check-in-date">check-In</label>
+                            <input type="datetime-local" id="check-in-date" />
+                        </div>
+                        <div>
+                            <label for="check-out-date">check-Out</label>
+                            <input type="datetime-local" id="check-out-date" />
+                        </div>
+                        <div>
+                            <button type="submit">Reserve</button>
+                        </div>
+                    </fieldset>
                 </form>
             </div>
 
-            <div class="description-section">
+            <div class="full-description-section border">
                 <h3 class="txt-center">Hotel description</h3>
                 <span> Our hotel is the best!!!</span>
                 <details>
                     <summary aria-expanded="false">See more...</summary>
                     <p>hotel textual description</p>
                 </details>
-            </span>
+            </div>
         </main>
 
         <footer class="txt-center">Footer textual links</footer>

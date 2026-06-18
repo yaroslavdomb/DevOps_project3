@@ -18,10 +18,10 @@
     
     --photo-min-width: 90px;
     
-    --mobile-width: 95%;
+    --mobile-width: 100%;
     --mobile-photo-margin: 20px;
     
-    --item-margin-bottom: 15px;
+    --item-margin-bottom: 10px;
 }
 
 body {
@@ -48,23 +48,35 @@ input::placeholder {
     color: gray;
 }
 
-.description-section {
+.full-description-section {
     width: 100%;
     clear: both;
-    margin-top: 20px;
+    margin-top: 12px;
+    margin-bottom: 12px;
 }
 
-.hotel-photo {
+.hotel-photo, footer, .border {
     border: 2px solid red;
     border-radius: 8px;
     box-sizing: border-box;
 }
 
-.booking-container form {
+.booking-container form fieldset {
     border: var(--form-border) solid red;
     border-radius: 8px;
     padding: var(--form-padding);
+    margin: 0;
     box-sizing: border-box;
+}
+
+.booking-container form fieldset legend {
+    padding: 0 5px;
+    font-weight: bold;
+}
+
+form div:has(button[type="submit"]) {
+    margin-top: 8px;
+    margin-bottom: 0;
 }
 
 @media (min-width: 486px) {
@@ -86,6 +98,10 @@ input::placeholder {
     form div span {
         grid-column: 2;
         font-size: 0.85em;
+    }
+    form div button[type="submit"] {
+        grid-column: 2;
+        justify-self: end;
     }
 }
 
@@ -113,5 +129,8 @@ input::placeholder {
     form div span {
         font-size: 0.85em;
         margin-top: 5px;
+    }
+    form div button[type="submit"] {
+        align-self: flex-end;
     }
 }
