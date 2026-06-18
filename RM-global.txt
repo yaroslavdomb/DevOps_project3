@@ -1,0 +1,33 @@
+Task:
+	https://github.com/YakirBar/devops-project#-final-project--kubernetes--jenkins--argocd--elk
+	
+Folder structure:
+	frontend-repo/
+	│
+	├── src/
+	├── Dockerfile
+	└── README.md
+
+	backend-repo/
+	│
+	├── src/
+	├── Dockerfile
+	└── README.md
+
+	infra-repo/
+	│
+	├── kubernetes/
+	│   ├── secrets/
+	│   ├── volumes/
+	│   ├── services/
+	│   └── deployments/
+	│
+	├── pipelines/
+	│   ├── build.Jenkinsfile
+	│   └── prepare.Jenkinsfile
+	│
+	├── argocd/
+	│   ├── frontend-app.yaml
+	│   └── backend-app.yaml
+	│
+	└── README.md
