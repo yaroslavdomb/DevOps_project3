@@ -24,6 +24,10 @@
     --item-margin-bottom: 10px;
 }
 
+.is-hidden {
+    display: none !important;
+}
+
 body {
     background-color: lightblue;
     margin: 0;
