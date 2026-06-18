@@ -1,50 +1,59 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotels</title>
-</head>
-<body>
     <head>
-        some small menu
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Hotels</title>
+        <link rel="stylesheet" href="../CSS/reservation.css" />
     </head>
+    <body>
+        <header>some small menu</header>
 
-    <main>
-        <h1>Look at me and reserve!</h1>
+        <main>
+            <h1 class="main-title">Look at me and reserve!</h1>
 
-        <a href=""></a>
+            <a href=""></a>
 
-        <form>
-            <div>
-                <label>Name:</label>
-                <input type="text">
+            <div class="booking-container">
+                <img src="hotel.jpg" alt="Hotel" class="hotel-photo" />
+
+                <form>
+                    <div>
+                        <label for="guest-name">Name:</label>
+                        <input
+                            type="text"
+                            id="guest-name"
+                            placeholder="input your full name"
+                            pattern="[\p{L}\s]+"
+                            aria-describedby="name-hint"
+                        />
+                        <span id="name-hint" style="display: none">Only letters and space allowed</span>
+                    </div>
+                    <div>
+                        <label for="guest-email">Email:</label>
+                        <input type="email" id="guest-email" aria-describedby="email-hint" />
+                    </div>
+                    <div>
+                        <label for="check-in-date">check-In</label>
+                        <input type="datetime-local" id="check-in-date" />
+                    </div>
+                    <div>
+                        <label for="check-out-date">check-Out</label>
+                        <input type="datetime-local" id="check-out-date" />
+                    </div>
+                    <button type="submit">Reserve</button>
+                </form>
             </div>
-            <div>
-                <label>Email:</label>
-                <input type="text">
-            </div>
-            <div>
-                <label>check-In</label>
-                <input type="text">
-            </div>
-            <div>
-                <label>check-Out</label>
-                <input type="text">
-            </div>
-            <button onclick="">Reserve</button>
-        </form>
 
-        <div>
-            <h3>
-                Hotel description
-            </h3>
-            hotel textual description
-        </div>
-    </main>
+            <div class="description-section">
+                <h3>Hotel description</h3>
+                <details>
+                    <summary aria-expanded="false">see more...</summary>
+                    <p>hotel textual description</p>
+                </details>
+            </div>
+        </main>
 
-    <footer>
-        text links
-    </footer>
-</body>
+        <footer>text links</footer>
+    </body>
 </html>
