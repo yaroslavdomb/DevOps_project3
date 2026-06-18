@@ -1,29 +1,3 @@
-:root {
-    --form-border: 2px;
-    --form-padding: 15px;
-    --form-grid-col1: 100px;
-    --form-grid-gap: 10px;
-    --form-grid-col2: 194px;
-
-    --form-width: calc(
-        (var(--form-border) * 2) + 
-        (var(--form-padding) * 2) + 
-        var(--form-grid-col1) + 
-        var(--form-grid-gap) + 
-        var(--form-grid-col2)
-    );
-
-    --container-gap: 20px;
-    --photo-subtract-width: calc(var(--form-width) + var(--container-gap));
-    
-    --photo-min-width: 90px;
-    
-    --mobile-width: 100%;
-    --mobile-photo-margin: 20px;
-    
-    --item-margin-bottom: 10px;
-}
-
 body {
     background-color: lightblue;
     margin: 0;
@@ -35,102 +9,62 @@ body {
     text-align: center;
 }
 
-.booking-container {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    width: 100%;
-    box-sizing: border-box;
-    gap: var(--container-gap);
-}
-
-input::placeholder {
-    color: gray;
-}
-
-.full-description-section {
-    width: 100%;
-    clear: both;
-    margin-top: 12px;
-    margin-bottom: 12px;
-}
-
-.hotel-photo, footer, .border {
+form fieldset {
     border: 2px solid red;
     border-radius: 8px;
+    padding: 15px;
+    margin: 0 auto;
+    max-width: 400px;
     box-sizing: border-box;
 }
 
-.booking-container form fieldset {
-    border: var(--form-border) solid red;
-    border-radius: 8px;
-    padding: var(--form-padding);
-    margin: 0;
-    box-sizing: border-box;
-}
-
-.booking-container form fieldset legend {
+form fieldset legend {
     padding: 0 5px;
     font-weight: bold;
 }
 
+fieldset > span {
+    display: block;
+    text-align: center;
+    margin: 15px 0;
+    font-weight: bold;
+}
+
+form div {
+    margin-bottom: 25px; 
+}
+
 form div:has(button[type="submit"]) {
-    margin-top: 8px;
     margin-bottom: 0;
+    display: flex;
+    justify-content: flex-end;
 }
 
 @media (min-width: 486px) {
-    .hotel-photo {
-        width: calc(100% - var(--photo-subtract-width));
-        min-width: var(--photo-min-width);
-    }
-    .booking-container form {
-        width: var(--form-width);
-        flex-shrink: 0;
-    }
-    form div {
+    form div:not(:has(button)) {
         display: grid;
-        grid-template-columns: var(--form-grid-col1) 1fr;
-        gap: var(--form-grid-gap);
-        margin-bottom: var(--item-margin-bottom);
+        grid-template-columns: 100px 1fr;
+        gap: 25px; 
         align-items: center;
     }
+    
     form div span {
         grid-column: 2;
         font-size: 0.85em;
-    }
-    form div button[type="submit"] {
-        grid-column: 2;
-        justify-self: end;
     }
 }
 
 @media (max-width: 486px) {
-    .booking-container {
-        flex-direction: column;
-        align-items: center;
-    }
-    .hotel-photo {
-        width: var(--mobile-width);
-        margin-bottom: var(--mobile-photo-margin);
-    }
-    .booking-container form {
-        width: var(--mobile-width);
-    }
-    form div {
+    form div:not(:has(button)) {
         display: flex;
         flex-direction: column;
-        margin-bottom: var(--item-margin-bottom);
     }
+    
     form div input {
         width: 100%;
         box-sizing: border-box;
-    }
-    form div span {
-        font-size: 0.85em;
         margin-top: 5px;
     }
-    form div button[type="submit"] {
-        align-self: flex-end;
-    }
-}
+    
+    form div span {
+        font-size:

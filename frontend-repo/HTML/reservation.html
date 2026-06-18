@@ -4,22 +4,16 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Hotels</title>
-        <link rel="stylesheet" href="../CSS/index.css" />
+        <link rel="stylesheet" href="../CSS/reservation.css" />
     </head>
     <body>
         <header>some small menu</header>
 
         <main>
-            <h1 class="txt-center">Look at me and reserve!</h1>
-
-            <a href=""></a>
-
-            <div class="booking-container">
-                <img src="../resources/hotel.jpg" alt="Hotel you would like to reserve" class="hotel-photo" />
-
+            <h1 class="txt-center">Check your reservations</h1>
                 <form>
                     <fieldset>
-                        <legend>Reservation</legend>
+                        <legend>Search by ... </legend>
                         <div>
                             <label for="guest-name">Name:</label>
                             <input
@@ -31,32 +25,31 @@
                             />
                             <span id="name-hint" style="display: none">Only letters and space allowed</span>
                         </div>
+                        <span>
+                            OR
+                        </span>
                         <div>
                             <label for="guest-email">Email:</label>
                             <input type="email" id="guest-email" aria-describedby="email-hint" />
                         </div>
                         <div>
-                            <label for="check-in-date">check-In</label>
-                            <input type="datetime-local" id="check-in-date" />
-                        </div>
-                        <div>
-                            <label for="check-out-date">check-Out</label>
-                            <input type="datetime-local" id="check-out-date" />
-                        </div>
-                        <div>
-                            <button type="submit">Reserve</button>
+                            <button type="submit" onClick="">Search</button>
                         </div>
                     </fieldset>
                 </form>
-            </div>
 
-            <div class="full-description-section border">
-                <h3 class="txt-center">Hotel description</h3>
-                <span> Our hotel is the best!!!</span>
-                <details>
-                    <summary aria-expanded="false">See more...</summary>
-                    <p>hotel textual description</p>
-                </details>
+                <div>
+                    <div hidden>
+                        <h3>
+                            Active:
+                        </h3>
+                    </div>
+                    <div hidden>
+                        <h3>
+                            Completed:
+                        </h3>
+                    </div>
+                </div>
             </div>
         </main>
 
