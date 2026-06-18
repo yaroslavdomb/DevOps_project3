@@ -12,52 +12,58 @@
         <main>
             <h1 class="txt-center">Look at me and reserve!</h1>
 
-            <a href=""></a>
-
-            <div class="booking-container">
-                <img src="../resources/hotel.jpg" alt="Hotel you would like to reserve" class="hotel-photo" />
-
-                <form>
-                    <fieldset>
-                        <legend>Reservation</legend>
-                        <div>
-                            <label for="guest-name">Name:</label>
-                            <input
-                                type="text"
-                                id="guest-name"
-                                placeholder="input your full name"
-                                pattern="[\p{L}\s]+"
-                                aria-describedby="name-hint"
-                            />
-                            <span id="name-hint" style="display: none">Only letters and space allowed</span>
-                        </div>
-                        <div>
-                            <label for="guest-email">Email:</label>
-                            <input type="email" id="guest-email" aria-describedby="email-hint" />
-                        </div>
-                        <div>
-                            <label for="check-in-date">check-In</label>
-                            <input type="datetime-local" id="check-in-date" />
-                        </div>
-                        <div>
-                            <label for="check-out-date">check-Out</label>
-                            <input type="datetime-local" id="check-out-date" />
-                        </div>
-                        <div>
-                            <button type="submit">Reserve</button>
-                        </div>
-                    </fieldset>
-                </form>
+            <div class="search-hotel-container">
+                <label for="search-hotel">I would like to reserve at: </label>
+                <select id="search-hotel">
+                    <option value="">Select a hotel...</option>
+                </select>
+                <button onclick="">Select hotel</button>
+            </div>
+            
+            <div class="hotel-container">
+                <img src="../resources/hotel.jpg" alt="Hotel you would like to reserve" class="hotel-photo" /> 
+                
+                <fieldset class="full-description-section border">
+                    <legend>Hotel description</legend>
+                    <span> Our hotel is the best!!!</span>
+                    <details>
+                        <summary aria-expanded="false">See more...</summary>
+                        <p>hotel textual description</p>
+                    </details>
+                </fieldset>
             </div>
 
-            <div class="full-description-section border">
-                <h3 class="txt-center">Hotel description</h3>
-                <span> Our hotel is the best!!!</span>
-                <details>
-                    <summary aria-expanded="false">See more...</summary>
-                    <p>hotel textual description</p>
-                </details>
-            </div>
+            <form class="reservation-form">
+                <fieldset>
+                    <legend>Reservation</legend>
+                    <div>
+                        <label for="guest-name">Name:</label>
+                        <input
+                            type="text"
+                            id="guest-name"
+                            placeholder="input your full name"
+                            pattern="[\p{L}\s]+"
+                            aria-describedby="name-hint"
+                        />
+                        <span id="name-hint" style="display: none">Only letters and space allowed</span>
+                    </div>
+                    <div>
+                        <label for="guest-email">Email:</label>
+                        <input type="email" id="guest-email" aria-describedby="email-hint" />
+                    </div>
+                    <div>
+                        <label for="check-in-date">check-In</label>
+                        <input type="datetime-local" id="check-in-date" />
+                    </div>
+                    <div>
+                        <label for="check-out-date">check-Out</label>
+                        <input type="datetime-local" id="check-out-date" />
+                    </div>
+                    <div>
+                        <button type="submit">Reserve</button>
+                    </div>
+                </fieldset>
+            </form>
         </main>
 
         <footer class="txt-center">Footer textual links</footer>

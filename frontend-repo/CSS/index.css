@@ -35,13 +35,18 @@ body {
     text-align: center;
 }
 
-.booking-container {
+.search-hotel-container {
+    margin-bottom: 25px;
+}
+
+.hotel-container {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
     width: 100%;
     box-sizing: border-box;
     gap: var(--container-gap);
+    margin-bottom: 20px;
 }
 
 input::placeholder {
@@ -49,10 +54,16 @@ input::placeholder {
 }
 
 .full-description-section {
-    width: 100%;
-    clear: both;
-    margin-top: 12px;
-    margin-bottom: 12px;
+    flex: 1;
+    min-width: 200px;
+    margin: 0;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.full-description-section legend {
+    padding: 0 5px;
+    font-weight: bold;
 }
 
 .hotel-photo, footer, .border {
@@ -61,7 +72,7 @@ input::placeholder {
     box-sizing: border-box;
 }
 
-.booking-container form fieldset {
+.reservation-form fieldset {
     border: var(--form-border) solid red;
     border-radius: 8px;
     padding: var(--form-padding);
@@ -69,7 +80,7 @@ input::placeholder {
     box-sizing: border-box;
 }
 
-.booking-container form fieldset legend {
+.reservation-form fieldset legend {
     padding: 0 5px;
     font-weight: bold;
 }
@@ -84,7 +95,7 @@ form div:has(button[type="submit"]) {
         width: calc(100% - var(--photo-subtract-width));
         min-width: var(--photo-min-width);
     }
-    .booking-container form {
+    .reservation-form {
         width: var(--form-width);
         flex-shrink: 0;
     }
@@ -106,15 +117,19 @@ form div:has(button[type="submit"]) {
 }
 
 @media (max-width: 486px) {
-    .booking-container {
+    .hotel-container {
         flex-direction: column;
         align-items: center;
+        width: 100%;
     }
     .hotel-photo {
         width: var(--mobile-width);
         margin-bottom: var(--mobile-photo-margin);
     }
-    .booking-container form {
+    .full-description-section {
+        width: 100%;
+    }
+    .reservation-form {
         width: var(--mobile-width);
     }
     form div {

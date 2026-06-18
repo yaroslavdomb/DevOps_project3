@@ -54,7 +54,7 @@ form div:has(button[type="submit"]) {
     }
 }
 
-@media (max-width: 486px) {
+@media (max-width: 485px) {
     form div:not(:has(button)) {
         display: flex;
         flex-direction: column;
@@ -67,4 +67,7 @@ form div:has(button[type="submit"]) {
     }
     
     form div span {
-        font-size:
+        font-size: 0.85em;
+        margin-top: 5px;
+    }
+}
