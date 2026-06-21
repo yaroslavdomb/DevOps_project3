@@ -28,6 +28,31 @@
     display: none !important;
 }
 
+header {
+    background: linear-gradient(90deg, #1e3c72 0%, #9a4ef1 100%);
+    padding: 15px 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+header nav {
+  display: flex;
+  gap: 20px;
+}
+
+header a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.3s ease;
+  border: 2px solid yellow;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+header a:hover {
+  opacity: 0.8;
+}
+
 body {
     background-color: lightblue;
     margin: 0;
