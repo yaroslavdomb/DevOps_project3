@@ -42,7 +42,7 @@ export const reservationTestData = [
         hotel_id: 3,
         hotel_name: "The Archive Inn",
         guest_full_name: "Sarah Connor",
-        guest_email: "s.connor@example.com",
+        guest_email: "elena.p@example.com",
         check_in_date: "2026-08-01",
         check_out_date: "2026-08-05",
         special_requests: "Quiet room away from the elevator."
@@ -68,7 +68,7 @@ export const reservationTestData = [
     {
         hotel_id: 4,
         hotel_name: "The My All Include",
-        guest_full_name: "Carlos Santana",
+        guest_full_name: "James Bond",
         guest_email: "carlos.s@example.es",
         check_in_date: "2026-09-01",
         check_out_date: "2026-09-14",
@@ -102,3 +102,15 @@ export const reservationTestData = [
         special_requests: "Twin beds instead of one double bed."
     }
 ];
+
+export function searchByName(searchKey) {
+    return reservationTestData.filter((reservation) => {
+        return searchKey === reservation.guest_full_name;
+    });
+}
+
+export function searchByEmail(searchKey) {
+    return reservationTestData.filter((reservation) => {
+        return searchKey === reservation.guest_email;
+    });
+}

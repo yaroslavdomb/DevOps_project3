@@ -1,4 +1,4 @@
-import { reservationTestData, config } from "../testData/testModule.js";
+import { searchByName, searchByEmail, config } from "../testData/testModule.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const API_URL = "http://localhost:8080/api/hotels";
@@ -9,10 +9,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let reservationData;
 
-    async function fetchReservations() {
+    async function fetchReservations(type, searchKey) {
         try {
             if (config.TEST_MODE_ON) {
-                reservationData = reservationTestData;
+                if (type === "name") {
+                    reservationData = searchByName(searchKey);
+                } else 
+                    reservationData = searchByEmail(searchKey);
             } else {
                 const response = await fetch(API_URL);
                 if (!response.ok) {
@@ -126,9 +129,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    function getTypeAndPayload(event) {
+        const formElements = event.target.form.elements;
+        const name = document.getElementById("guest-name").value.trim();
+        const email = document.getElementById("guest-email").value.trim();
+
+        return name ? { type: "name", searchKey: name } : { type: "email", searchKey: email };
+    }
+
     searchBtn.addEventListener("click", (event) => {
         event.preventDefault();
-        fetchReservations();
+        const { type, searchKey } = getTypeAndPayload(event);
+        fetchReservations(type, searchKey);
 
         actReservationList.classList.remove("is-hidden");
         completedReservationList.classList.remove("is-hidden");
