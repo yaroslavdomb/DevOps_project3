@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Hotels</title>
         <link rel="stylesheet" href="../CSS/index.css" />
+        <script src="../JS/index.js" type="module" defer></script>
     </head>
     <body>
         <header>some small menu</header>
@@ -15,13 +16,13 @@
             <div class="search-hotel-container">
                 <label for="search-hotel">I would like to reserve at: </label>
                 <select id="search-hotel">
-                    <option value="">Select a hotel...</option>
+                    <option value="" disabled selected hidden>Select a hotel...</option>
                 </select>
-                <button onclick="">Select hotel</button>
+                <button id="hotel-selected-btn">Select hotel</button>
             </div>
 
             <div class="hotel-container is-hidden">
-                <img src="../resources/hotel.jpg" alt="Hotel you would like to reserve" class="hotel-photo" />
+                <img src="../resources/hotel-1.jpg" alt="Hotel you would like to reserve" class="hotel-photo" />
 
                 <fieldset class="full-description-section border">
                     <legend>Hotel description</legend>
