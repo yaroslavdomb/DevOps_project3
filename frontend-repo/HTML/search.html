@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Hotels</title>
         <link rel="stylesheet" href="../CSS/search.css" />
+        <script type="module" src="../JS/search.js"></script>
     </head>
     <body>
         <header>
@@ -35,18 +36,19 @@
                             <input type="email" id="guest-email" aria-describedby="email-hint" />
                         </div>
                         <div>
-                            <button type="submit" onClick="">Search</button>
+                            <button type="submit" id="check-reservation-btn">Search</button>
                         </div>
                     </fieldset>
                 </form>
 
                 <div>
-                    <div hidden>
+                    <div id="active-reservations" class="is-hidden">
                         <h3>
                             Active:
                         </h3>
+
                     </div>
-                    <div hidden>
+                    <div id="completed-reservations" class="is-hidden">
                         <h3>
                             Completed:
                         </h3>

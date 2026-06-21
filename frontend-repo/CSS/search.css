@@ -65,6 +65,10 @@ form div:has(button[type="submit"]) {
     justify-content: flex-end;
 }
 
+.is-hidden {
+    display: none !important;
+}
+
 @media (min-width: 486px) {
     form div:not(:has(button)) {
         display: grid;
@@ -95,4 +99,54 @@ form div:has(button[type="submit"]) {
         font-size: 0.85em;
         margin-top: 5px;
     }
+}
+
+.reservations-table {
+    width: 60%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    margin-bottom: 30px;
+}
+
+.reservations-table th, 
+.reservations-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.reservations-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+.reservations-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.reservations-table th:nth-child(1),
+.reservations-table td:nth-child(1) {
+    width: 15%;
+}
+
+.reservations-table th:nth-child(2),
+.reservations-table td:nth-child(2) {
+    width: 15%;
+}
+
+.reservations-table th:nth-child(3),
+.reservations-table td:nth-child(3) {
+    width: 15%;
+}
+
+.reservations-table th:nth-child(4),
+.reservations-table td:nth-child(4) {
+    width: 15%;
+}
+
+h3 {
+    background-color: #fff2cc;
+    padding: 12px 16px;
+    margin-top: 20px;
+    margin-bottom: 10px;
 }

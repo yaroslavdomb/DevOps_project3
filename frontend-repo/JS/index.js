@@ -1,4 +1,4 @@
-import { testData, config } from "../testData/testModule.js";
+import { hotelTestData, config } from "../testData/testModule.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const API_URL = "http://localhost:8080/api/hotels";
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     async function fetchHotels() {
         try {
             if (config.TEST_MODE_ON) {
-                hotelsData = testData;
+                hotelsData = hotelTestData;
             } else {
                 const response = await fetch(API_URL);
                 if (!response.ok) {

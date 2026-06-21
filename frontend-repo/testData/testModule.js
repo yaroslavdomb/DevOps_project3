@@ -3,9 +3,102 @@ export const config = {
     PIC_LOADING_TIME: 3000
 };
 
-export const testData = [
+export const hotelTestData = [
     { id: "1", name: "Grand Ho-ho Hotel", photoLink: "../resources/hotel-1.jpg", description: "asd" },
     { id: "2", name: "Santa-Clause Resort & Spa", photoLink: "../resources/hotel-2.jpg", description: "" },
     { id: "3", name: "The Archive Inn", photoLink: "../resources/hotel-3.jpg", description: "" },
     { id: "4", name: "The My All Include", photoLink: "../resources/hotel-4.jpg", description: "" }
+];
+
+export const reservationTestData = [
+    {
+        hotel_id: 1,
+        hotel_name: "Grand Ho-ho Hotel",
+        guest_full_name: "John Doe",
+        guest_email: "john.doe@example.com",
+        check_in_date: "2024-07-01",
+        check_out_date: "2024-07-10",
+        special_requests: "High floor room and early check-in if possible."
+    },
+    {
+        hotel_id: 2,
+        hotel_name: "Santa-Clause Resort & Spa",
+        guest_full_name: "Emma Watson",
+        guest_email: "emma.w@example.net",
+        check_in_date: "2026-07-05",
+        check_out_date: "2026-07-12",
+        special_requests: "Allergies to feathers, please provide synthetic pillows."
+    },
+    {
+        hotel_id: 1,
+        hotel_name: "Grand Ho-ho Hotel",
+        guest_full_name: "Michael Smith",
+        guest_email: "m.smith@example.org",
+        check_in_date: "2026-03-15",
+        check_out_date: "2026-03-20",
+        special_requests: "None"
+    },
+    {
+        hotel_id: 3,
+        hotel_name: "The Archive Inn",
+        guest_full_name: "Sarah Connor",
+        guest_email: "s.connor@example.com",
+        check_in_date: "2026-08-01",
+        check_out_date: "2026-08-05",
+        special_requests: "Quiet room away from the elevator."
+    },
+    {
+        hotel_id: 4,
+        hotel_name: "The My All Include",
+        guest_full_name: "David Kim",
+        guest_email: "kim.david@example.com",
+        check_in_date: "2026-08-12",
+        check_out_date: "2026-08-15",
+        special_requests: "Late check-out around 3 PM."
+    },
+    {
+        hotel_id: 2,
+        hotel_name: "Santa-Clause Resort & Spa",
+        guest_full_name: "Anna Muller",
+        guest_email: "anna.m@example.de",
+        check_in_date: "2025-12-20",
+        check_out_date: "2026-01-27",
+        special_requests: ""
+    },
+    {
+        hotel_id: 4,
+        hotel_name: "The My All Include",
+        guest_full_name: "Carlos Santana",
+        guest_email: "carlos.s@example.es",
+        check_in_date: "2026-09-01",
+        check_out_date: "2026-09-14",
+        special_requests: "Vegetarian meals during the stay."
+    },
+    {
+        hotel_id: 3,
+        hotel_name: "The Archive Inn",
+        guest_full_name: "Elena Petrova",
+        guest_email: "elena.p@example.com",
+        check_in_date: "2026-09-10",
+        check_out_date: "2026-09-15",
+        special_requests: "Extra towels and a bottle of champagne upon arrival."
+    },
+    {
+        hotel_id: 1,
+        hotel_name: "Grand Ho-ho Hotel",
+        guest_full_name: "James Bond",
+        guest_email: "007@example.co.uk",
+        check_in_date: "2026-10-05",
+        check_out_date: "2026-10-07",
+        special_requests: ""
+    },
+    {
+        hotel_id: 4,
+        hotel_name: "The My All Include",
+        guest_full_name: "Linda Taylor",
+        guest_email: "linda.t@example.com",
+        check_in_date: "2026-10-22",
+        check_out_date: "2026-10-25",
+        special_requests: "Twin beds instead of one double bed."
+    }
 ];
