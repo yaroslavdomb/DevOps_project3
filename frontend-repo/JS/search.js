@@ -1,4 +1,4 @@
-import { searchByName, searchByEmail, config } from "../testData/testModule.js";
+import { reservationTestData, searchByName, searchByEmail, config } from "../testData/testModule.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const API_URL = "http://localhost:8080/api/hotels";
@@ -12,10 +12,14 @@ document.addEventListener("DOMContentLoaded", () => {
     async function fetchReservations(type, searchKey) {
         try {
             if (config.TEST_MODE_ON) {
+                const savedData = localStorage.getItem("my_reservations");
+                const currentData = savedData ? JSON.parse(savedData) : reservationTestData;
+
                 if (type === "name") {
-                    reservationData = searchByName(searchKey);
-                } else 
-                    reservationData = searchByEmail(searchKey);
+                    reservationData = searchByName(searchKey, currentData);
+                } else {
+                    reservationData = searchByEmail(searchKey, currentData);
+                }
             } else {
                 const response = await fetch(API_URL);
                 if (!response.ok) {

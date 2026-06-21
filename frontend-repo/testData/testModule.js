@@ -1,6 +1,6 @@
 export const config = {
     TEST_MODE_ON: true,
-    PIC_LOADING_TIME: 3000
+    PIC_LOADING_TIME: 1000
 };
 
 export const hotelTestData = [
@@ -103,14 +103,32 @@ export const reservationTestData = [
     }
 ];
 
-export function searchByName(searchKey) {
-    return reservationTestData.filter((reservation) => {
-        return searchKey === reservation.guest_full_name;
-    });
+export function searchByName(searchKey, currentData) {
+    return currentData.filter((reservation) => searchKey === reservation.guest_full_name);
 }
 
-export function searchByEmail(searchKey) {
-    return reservationTestData.filter((reservation) => {
-        return searchKey === reservation.guest_email;
-    });
+export function searchByEmail(searchKey, currentData) {
+    return currentData.filter((reservation) => searchKey === reservation.guest_email);
+}
+
+export function updateReservationData(fullName, checkin, checkout, email, hotelId, hotelName, addition) {
+    const reservation = {
+        hotel_id: hotelId,
+        hotel_name: hotelName,
+        guest_full_name: fullName,
+        guest_email: email,
+        check_in_date: checkin,
+        check_out_date: checkout,
+        special_requests: addition
+    };
+
+    const savedData = localStorage.getItem("my_reservations");
+    const currentReservations = savedData ? JSON.parse(savedData) : [...reservationTestData];
+
+    currentReservations.push(reservation);
+
+    reservationTestData.length = 0;
+    reservationTestData.push(...currentReservations);
+
+    localStorage.setItem("my_reservations", JSON.stringify(currentReservations));
 }
