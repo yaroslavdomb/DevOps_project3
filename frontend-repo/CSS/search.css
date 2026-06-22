@@ -144,6 +144,11 @@ form div:has(button[type="submit"]) {
     width: 15%;
 }
 
+.reservations-table th:nth-child(5),
+.reservations-table td:nth-child(5) {
+    width: 15%;
+}
+
 h3 {
     background-color: #fff2cc;
     padding: 12px 16px;

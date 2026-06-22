@@ -33,6 +33,34 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    async function cancelReservation(id) {
+        try {
+            if (config.TEST_MODE_ON) {
+                const savedData = localStorage.getItem("my_reservations");
+                let currentData = savedData ? JSON.parse(savedData) : reservationTestData;
+
+                currentData = currentData.filter((currentReservation) => String(currentReservation._id) !== id);
+                localStorage.setItem("my_reservations", JSON.stringify(currentData));
+
+                reservationData = reservationData.filter((currentReservation) => String(currentReservation._id) !== id);
+                renderReservation(reservationData);
+            } else {
+                const response = await fetch(`${API_URL}/reservations/${id}`, {
+                    method: "DELETE"
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                reservationData = reservationData.filter((currentReservation) => String(currentReservation._id) !== id);
+                renderReservation(reservationData);
+            }
+        } catch (error) {
+            console.error("Error canceling reservation:", error);
+        }
+    }
+
     function renderReservation(reservations) {
         if (reservations.length === 0) {
             actReservationList.innerHTML = `
@@ -69,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             <td>${reservation.check_in_date}</td>
                             <td>${reservation.check_out_date}</td>
                             <td>${reservation.special_requests || "---"}</td>
+                            <td><button class="delete-btn" data-id="${reservation._id}">Delete</button></td>
                         </tr>
                     `
                 )
@@ -82,6 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             <th>Check-in</th>
                             <th>Check-out</th>
                             <th>Guest special request</th>
+                            <th>Actions</th>                         
                         </tr>
                     </thead>
                     <tbody>
@@ -148,5 +178,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         actReservationList.classList.remove("is-hidden");
         completedReservationList.classList.remove("is-hidden");
+    });
+
+    actReservationList.addEventListener("click", (event) => {
+        if (event.target.classList.contains("delete-btn")) {
+            const id = event.target.getAttribute("data-id");
+            cancelReservation(id);
+        }
     });
 });

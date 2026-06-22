@@ -12,6 +12,7 @@ export const hotelTestData = [
 
 export const reservationTestData = [
     {
+        _id: 123456789,
         hotel_id: 1,
         hotel_name: "Grand Ho-ho Hotel",
         guest_full_name: "John Doe",
@@ -21,6 +22,27 @@ export const reservationTestData = [
         special_requests: "High floor room and early check-in if possible."
     },
     {
+        _id: 123456789000,
+        hotel_id: 1,
+        hotel_name: "Grand Ho-ho Hotel",
+        guest_full_name: "John Doe",
+        guest_email: "john.doe@example.com",
+        check_in_date: "2027-07-01",
+        check_out_date: "2027-07-10",
+        special_requests: "High floor room and early check-in if possible."
+    },
+    {
+        _id: 123456789888,
+        hotel_id: 2,
+        hotel_name: "Santa-Clause Resort & Spa",
+        guest_full_name: "John Doe",
+        guest_email: "john.doe@example.com",
+        check_in_date: "2027-07-01",
+        check_out_date: "2027-07-10",
+        special_requests: "High floor room and early check-in if possible."
+    },
+    {
+        _id: 123456789999,
         hotel_id: 2,
         hotel_name: "Santa-Clause Resort & Spa",
         guest_full_name: "Emma Watson",
@@ -30,6 +52,7 @@ export const reservationTestData = [
         special_requests: "Allergies to feathers, please provide synthetic pillows."
     },
     {
+        _id: 1234567897788,
         hotel_id: 1,
         hotel_name: "Grand Ho-ho Hotel",
         guest_full_name: "Michael Smith",
@@ -39,6 +62,7 @@ export const reservationTestData = [
         special_requests: "None"
     },
     {
+        _id: 123456789456456,
         hotel_id: 3,
         hotel_name: "The Archive Inn",
         guest_full_name: "Sarah Connor",
@@ -48,6 +72,7 @@ export const reservationTestData = [
         special_requests: "Quiet room away from the elevator."
     },
     {
+        _id: 14423456789,
         hotel_id: 4,
         hotel_name: "The My All Include",
         guest_full_name: "David Kim",
@@ -57,6 +82,7 @@ export const reservationTestData = [
         special_requests: "Late check-out around 3 PM."
     },
     {
+        _id: 1233434456789,
         hotel_id: 2,
         hotel_name: "Santa-Clause Resort & Spa",
         guest_full_name: "Anna Muller",
@@ -66,6 +92,7 @@ export const reservationTestData = [
         special_requests: ""
     },
     {
+        _id: 123456780009,
         hotel_id: 4,
         hotel_name: "The My All Include",
         guest_full_name: "James Bond",
@@ -75,6 +102,7 @@ export const reservationTestData = [
         special_requests: "Vegetarian meals during the stay."
     },
     {
+        _id: 1123456789000,
         hotel_id: 3,
         hotel_name: "The Archive Inn",
         guest_full_name: "Elena Petrova",
@@ -84,6 +112,7 @@ export const reservationTestData = [
         special_requests: "Extra towels and a bottle of champagne upon arrival."
     },
     {
+        _id: 12345678998982,
         hotel_id: 1,
         hotel_name: "Grand Ho-ho Hotel",
         guest_full_name: "James Bond",
@@ -93,6 +122,7 @@ export const reservationTestData = [
         special_requests: ""
     },
     {
+        _id: 12345678923231,
         hotel_id: 4,
         hotel_name: "The My All Include",
         guest_full_name: "Linda Taylor",
