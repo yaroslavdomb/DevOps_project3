@@ -1,4 +1,5 @@
 import express from "express";
+import mongoose from "mongoose"
 import Reservation from "../models/Reservation.js";
 import * as validators from "../validators/reservation.js";
 import { createReservationService } from "../services/reservation.service.js";

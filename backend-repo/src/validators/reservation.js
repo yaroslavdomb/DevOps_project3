@@ -12,7 +12,7 @@ export const validateSearchReservation = (req, res, next) => {
     next();
 };
 
-export const validateSearchReservation = [
+export const validateDeleteReservation = [
     param("id")
         .notEmpty()
         .withMessage("Id is required")
