@@ -5,7 +5,7 @@ import * as validators from "../validators/hotel.js";
 const router = express.Router();
 
 // GET /api/v1/hotels
-router.get("", async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         const hotels = await Hotel.find({}, {_id:0, hotelId:1, name:1}).limit(50);
         res.json(hotels);
