@@ -1,10 +1,14 @@
-import { hotelTestData, updateReservationData, config } from "../testData/testModule.js";
+import { hotelShortTestData, hotelFullTestData, updateReservationData, config } from "../testData/testModule.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-    const API_URL = "http://localhost:8080/api/hotels";
+    const HOTEL_BASE_URL = "/api/v1/hotels";
+    const RESERVATION_BASE_URL = "/api/v1/reservations";
 
     const hotelList = document.getElementById("search-hotel");
     const hotelSelectedBtn = document.getElementById("hotel-selected-btn");
+    const checkInInput = document.getElementById("check-in-date");
+    const checkOutInput = document.getElementById("check-out-date");
+    const totalSumOutput = document.getElementById("total-sum");
     const hotelContainer = document.querySelector(".hotel-container");
     const reservationForm = document.querySelector(".reservation-form");
     const hotelImage = document.querySelector(".hotel-photo");
@@ -12,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const reserveBtn = document.getElementById("reserve-hotel-btn");
 
     let hotelsData;
+    let currentHotelPrice = 0;
 
     async function hotelReservation(hotelId, hotelName) {
         const fullName = document.getElementById("guest-name").value;
@@ -24,19 +29,34 @@ document.addEventListener("DOMContentLoaded", () => {
             if (config.TEST_MODE_ON) {
                 updateReservationData(fullName, checkin, checkout, email, hotelId, hotelName, additional);
             } else {
-                const response = await fetch(API_URL, fullName, checkin, checkout, email, hotelId, hotelName, additional);
+                const body = JSON.stringify({
+                    fullName: fullName,
+                    email: email,
+                    hotelId: hotelId,
+                    hotelName: hotelName,
+                    checkInDate: checkin,
+                    checkOutDate: checkout,
+                    additionalReq: additional
+                });
+
+                const headers = {
+                    "Content-Type": "application/json"
+                };
+
+                const method = "POST";
+                const response = await fetch(RESERVATION_BASE_URL, { method, headers, body });
             }
         } catch (error) {
             console.error("Error: ", error);
         }
     }
 
-    async function fetchHotels() {
+    async function getAllHotelsShortData() {
         try {
             if (config.TEST_MODE_ON) {
-                hotelsData = hotelTestData;
+                hotelsData = hotelShortTestData;
             } else {
-                const response = await fetch(API_URL);
+                const response = await fetch(HOTEL_BASE_URL);
                 if (!response.ok) {
                     throw new Error(`Server error: ${response.status}`);
                 }
@@ -62,40 +82,88 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function loadHotelPic(selectedHotel) {
-        const imgLoader = new Image();
-        imgLoader.src = selectedHotel.photoLink;
+    function calculateTotalSum() {
+        const checkInValue = checkInInput.value;
+        const checkOutValue = checkOutInput.value;
 
-        imgLoader.onload = () => {
-            hotelImage.src = selectedHotel.photoLink;
-        };
-
-        imgLoader.onerror = () => {
-            hotelImage.src = "../resources/default-error-photo.png";
-        };
-    }
-
-    hotelSelectedBtn.addEventListener("click", () => {
-        const selectedId = hotelList.value;
-        const selectedHotel = hotelsData.find((hotel) => hotel.id === selectedId);
-
-        hotelDesc.textContent = selectedHotel.description;
-        hotelImage.src = "../resources/loading.png";
-
-        if (config.TEST_MODE_ON) {
-            setTimeout(() => loadHotelPic(selectedHotel), config.PIC_LOADING_TIME);
-        } else {
-            loadHotelPic(selectedHotel);
+        if (!checkInValue || !checkOutValue) {
+            if (config.LOGGING) {
+                console.log("One of the date (checkIn/checkOut) is not selected!");
+            }
+            totalSumOutput.textContent = "0.0";
+            return;
         }
 
+        const dateIn = new Date(checkInValue);
+        dateIn.setHours(0, 0, 0, 0);
+
+        const dateOut = new Date(checkOutValue);
+        dateOut.setHours(0, 0, 0, 0);
+
+        const totalVisitingDays = (dateOut - dateIn) / 86400000;
+
+        if (totalVisitingDays <= 0) {
+            totalSumOutput.textContent = "0.0";
+            return;
+        }
+
+        const totalSum = totalVisitingDays * currentHotelPrice;
+        if (config.LOGGING) {
+            console.log("totalSum = " + totalSum);
+            console.log("currentHotelPrice = " + currentHotelPrice);
+            console.log("totalVisitingDays = " + totalVisitingDays);
+        }
+        totalSumOutput.textContent = totalSum.toFixed(2);
+    }
+
+    hotelSelectedBtn.addEventListener("click", async () => {
+        const hotelId = hotelList.value;
+        const selectedHotel = hotelsData.find((hotel) => hotel.id === hotelId);
+        let currentHotel;
+
+        if (config.TEST_MODE_ON) {
+            currentHotel = hotelFullTestData.find((hotel) => hotel.id === hotelId);
+        } else {
+            try {
+                const params = new URLSearchParams({
+                    name: selectedHotel.name
+                });
+                const response = await fetch(`${HOTEL_BASE_URL}/${hotelId}?${params}`);
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+                currentHotel = await response.json();
+            } catch (error) {
+                console.error("Error getting hotel details: ", error);
+                return;
+            }
+        }
+
+        if (!currentHotel) {
+            console.error("Hotel not found!");
+            return;
+        }
+
+        if (currentHotel.photoLink) {
+            hotelImage.src = currentHotel.photoLink;
+            hotelImage.alt = currentHotel.name;
+        }
+
+        hotelDesc.innerHTML = `
+            <strong>Description: </strong> ${currentHotel.description || "No description available"}<br />
+            <strong>Location: </strong> ${currentHotel.location || "N/A"}<br />
+            <strong>Total rooms: </strong> ${currentHotel.rooms}<br />
+            <strong>Price per 1 night: </strong> ${currentHotel.price}
+        `;
+
+        currentHotelPrice = currentHotel.price;
         hotelContainer.classList.remove("is-hidden");
         reservationForm.classList.remove("is-hidden");
     });
 
-    reserveBtn.addEventListener ("click", (event) => {
+    reserveBtn.addEventListener("click", (event) => {
         event.preventDefault();
 
-        
         const hotelSelect = event.target.closest("main").querySelector("#search-hotel");
         const hotelId = hotelSelect.value;
         const hotelName = hotelSelect.options[hotelSelect.selectedIndex].textContent;
@@ -103,5 +171,8 @@ document.addEventListener("DOMContentLoaded", () => {
         hotelReservation(hotelId, hotelName);
     });
 
-    fetchHotels();
+    checkInInput.addEventListener("input", calculateTotalSum);
+    checkOutInput.addEventListener("input", calculateTotalSum);
+
+    getAllHotelsShortData();
 });

@@ -1,13 +1,53 @@
 export const config = {
     TEST_MODE_ON: true,
-    PIC_LOADING_TIME: 1000
+    LOGGING: true 
 };
 
-export const hotelTestData = [
-    { id: "1", name: "Grand Ho-ho Hotel", photoLink: "../resources/hotel-1.jpg", description: "asd" },
-    { id: "2", name: "Santa-Clause Resort & Spa", photoLink: "../resources/hotel-2.jpg", description: "" },
-    { id: "3", name: "The Archive Inn", photoLink: "../resources/hotel-3.jpg", description: "" },
-    { id: "4", name: "The My All Include", photoLink: "../resources/hotel-4.jpg", description: "" }
+export const hotelShortTestData = [
+    { id: "1", name: "Grand Ho-ho Hotel" },
+    { id: "2", name: "Santa-Clause Resort & Spa" },
+    { id: "3", name: "The Archive Inn" },
+    { id: "4", name: "The My All Include" }
+];
+
+export const hotelFullTestData = [
+    {
+        id: "1",
+        name: "Grand Ho-ho Hotel",
+        photoLink: "../resources/hotel-1.jpg",
+        description:
+            "It's really beatifull hotel on the banch of Red Sea! Come to visit us and ensure that it's real as you see on the photo!!!",
+        rooms: 4,
+        price: 10.2,
+        location: "Eilat"
+    },
+    {
+        id: "2",
+        name: "Santa-Clause Resort & Spa",
+        photoLink: "../resources/hotel-2.jpg",
+        description: "Some small description about wonderfull hotel in our paradasi",
+        rooms: 2,
+        price: 8.5,
+        location: "Eilat"
+    },
+    {
+        id: "3",
+        name: "The Archive Inn",
+        photoLink: "../resources/hotel-3.jpg",
+        description: "Description text for beatefull hotel",
+        rooms: 3,
+        price: 15,
+        location: "Golan"
+    },
+    {
+        id: "4",
+        name: "The My All Include",
+        photoLink: "../resources/hotel-4.jpg",
+        description: "",
+        rooms: 3,
+        price: 23.5,
+        location: "Golan"
+    }
 ];
 
 export const reservationTestData = [

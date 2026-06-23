@@ -1,7 +1,7 @@
 import { reservationTestData, searchByName, searchByEmail, config } from "../testData/testModule.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-    const API_URL = "http://localhost:8080/api/hotels";
+    //const API_URL = "http://localhost:8080/api/hotels";
 
     const actReservationList = document.getElementById("active-reservations");
     const completedReservationList = document.getElementById("completed-reservations");
