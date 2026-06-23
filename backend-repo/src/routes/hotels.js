@@ -7,7 +7,7 @@ const router = express.Router();
 // GET /api/v1/hotels
 router.get("/", async (req, res) => {
     try {
-        const hotels = await Hotel.find({}, {_id:0, hotelId:1, name:1}).limit(50);
+        const hotels = await Hotel.find({}, { _id: 0, hotelId: 1, name: 1 }).limit(50);
         res.json(hotels);
     } catch (err) {
         console.error(`Search for all hotels data return error: ${err}`);
@@ -18,13 +18,13 @@ router.get("/", async (req, res) => {
 // GET /api/v1/hotels/{id}
 router.get("/:id", validators.validateSearchHotel, async (req, res) => {
     try {
-        const { id : hotel_id } = req.params;
-        const hotel = await Hotel.findOne({ hotel_id });
-        if (!hotel) {
+        const { id: hotelId } = req.params;
+        const hotelData = await Hotel.findOne({ hotelId });
+        if (!hotelData) {
             console.error(`Hotel with id=${req.params.id} not found!`);
             return res.status(404).json({ error: "Hotel not found" });
         }
-        res.json(hotel);
+        res.json(hotelData);
     } catch (err) {
         console.error(`Search for id=${req.params.id} return error: ${err}`);
         res.status(500).json({ error: "DB data fetching error" });
