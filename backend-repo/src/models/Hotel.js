@@ -13,7 +13,9 @@ const hotelSchema = new mongoose.Schema({
         }
     },
     photo: { type: String },
-    description: { type: String }
+    description: { type: String },
+    location: { type: String },
+    price: { type: Number}
 });
 
 export default mongoose.model("Hotel", hotelSchema);
