@@ -1,4 +1,4 @@
-import { body, validationResult } from "express-validator";
+import { body, param, validationResult } from "express-validator";
 
 export const validateSearchReservation = (req, res, next) => {
     const { email, fullName } = req.query;
@@ -15,10 +15,8 @@ export const validateSearchReservation = (req, res, next) => {
 export const validateDeleteReservation = [
     param("id")
         .notEmpty()
-        .withMessage("Id is required")
-        .isInt({ min: 0 })
-        .withMessage("Hotel ID must be a non-negative integer"),
-
+        .withMessage("Id is required"),
+        
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -44,7 +42,7 @@ export const validateSaveReservation = [
         .isInt({ min: 0 })
         .withMessage("Hotel ID must be a non-negative integer"),
 
-    body("hotelName").optional,
+    body("hotelName").optional(),
 
     body("checkIn")
         .isISO8601()
@@ -69,7 +67,7 @@ export const validateSaveReservation = [
             return true;
         }),
 
-    body("additionalReq").optional,
+    body("additionalReq").optional(),
 
     (req, res, next) => {
         const errors = validationResult(req);

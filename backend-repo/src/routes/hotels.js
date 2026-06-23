@@ -1,5 +1,6 @@
 import express from "express";
 import Hotel from "../models/Hotel.js";
+import * as validators from "../validators/hotel.js";
 
 const router = express.Router();
 
@@ -15,9 +16,9 @@ router.get("", async (req, res) => {
 });
 
 // GET /api/v1/hotels/{id}
-router.get("/:id", async (req, res) => {
+router.get("/:id", validators.validateSearchHotel, async (req, res) => {
     try {
-        const { hotel_id } = req.params;
+        const { id : hotel_id } = req.params;
         const hotel = await Hotel.findOne({ hotel_id });
         if (!hotel) {
             console.error(`Hotel with id=${req.params.id} not found!`);
