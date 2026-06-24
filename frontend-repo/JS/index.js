@@ -1,8 +1,13 @@
 import { hotelShortTestData, hotelFullTestData, updateReservationData, config } from "../testData/testModule.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-    const HOTEL_BASE_URL = "/api/v1/hotels";
-    const RESERVATION_BASE_URL = "/api/v1/reservations";
+    const BASE_URL =
+        window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+            ? "http://localhost:3000"
+            : "";
+
+    const HOTEL_BASE_URL = `${BASE_URL}/api/v1/hotels`;
+    const RESERVATION_BASE_URL = `${BASE_URL}/api/v1/reservations`;
 
     const hotelList = document.getElementById("search-hotel");
     const hotelSelectedBtn = document.getElementById("hotel-selected-btn");
@@ -76,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         hotels.forEach((hotel) => {
             const currentHotel = document.createElement("option");
-            currentHotel.value = hotel.id;
+            currentHotel.value = hotel.hotelId;
             currentHotel.textContent = hotel.name;
             hotelList.appendChild(currentHotel);
         });
@@ -117,12 +122,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     hotelSelectedBtn.addEventListener("click", async () => {
-        const hotelId = hotelList.value;
-        const selectedHotel = hotelsData.find((hotel) => hotel.id === hotelId);
+        const hotelId = +hotelList.value;
+        const selectedHotel = hotelsData.find((hotel) => hotel.hotelId === hotelId);
         let currentHotel;
 
         if (config.TEST_MODE_ON) {
-            currentHotel = hotelFullTestData.find((hotel) => hotel.id === hotelId);
+            currentHotel = hotelFullTestData.find((hotel) => hotel.hotelId === hotelId);
         } else {
             try {
                 const params = new URLSearchParams({

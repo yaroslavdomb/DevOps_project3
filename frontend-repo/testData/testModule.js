@@ -1,5 +1,5 @@
 export const config = {
-    TEST_MODE_ON: true,
+    TEST_MODE_ON: false,
     LOGGING: true 
 };
 
