@@ -1,9 +1,9 @@
-import express from "express";
-import mongoose from "mongoose";
-import cors from "cors";
 import dotenv from "dotenv";
+import express from "express";
+import cors from "cors";
 import reservationsRouter from "./routes/reservations.js";
 import hotelsRouter from "./routes/hotels.js";
+import { globalRCon, globalWCon, initDatabase } from "./models/db.js";
 
 dotenv.config();
 
@@ -14,24 +14,32 @@ app.use(express.json());
 app.use("/api/v1/reservations", reservationsRouter);
 app.use("/api/v1/hotels", hotelsRouter);
 
-//check Liveness - Node.js is alive
 app.get("/health/live", (req, res) => {
     res.json({ status: "alive" });
 });
 
-//check Readiness - DB is ready
-app.get("/health/ready", async (req, res) => {
-    const isDbHealthy = mongoose.connection.readyState === 1;
-    if (isDbHealthy) {
+app.get("/health/ready", (req, res) => {
+    const dbRead = globalRCon.readyState === 1;
+    const dbWrite = globalWCon.readyState === 1;
+
+    if (dbRead && dbWrite) {
         return res.status(200).json({ status: "ok", database: "connected" });
     } else {
-        return res.status(500).json({ status: "error", database: "disconnected" });
+        return res.status(500).json({
+            status: "error",
+            database: "disconnected",
+            details: { hotelRead, resRead, resWrite }
+        });
     }
 });
 
 const PORT = process.env.PORT || 3000;
-mongoose
-    .connect(process.env.MONGO_URI)
-    .then(() => app.listen(PORT))
-    .then(() => console.log(`Connected to DB. Listening port ${PORT}`))
-    .catch((err) => console.error("DB connection error: " + err));
+try {
+    initDatabase();
+
+    app.listen(PORT, () => {
+        console.log(`Application initialized. Listening port ${PORT}`);
+    });
+} catch (err) {
+    console.error("Initialization error: " + err);
+}

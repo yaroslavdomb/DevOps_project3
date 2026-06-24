@@ -1,10 +1,11 @@
-import Hotel from "../models/Hotel.js";
-import Reservation from "../models/Reservation.js";
+import {hotelWModel} from "../models/Hotel.js";
+import {reservationWModel} from "../models/Reservation.js";
+import mongoose from "mongoose";
 
 export const createReservationService = async (data, session) => {
     let { fullName, email, hotelId, hotelName, checkIn, checkOut, additionalReq } = data;
 
-    const hotel = await Hotel.findOne({ hotelId: hotelId }).session(session);
+    const hotel = await hotelWModel.findOne({ hotelId: hotelId }).session(session);
     if (!hotel) {
         const error = new Error("Hotel not found");
         error.statusCode = 404;
@@ -15,11 +16,13 @@ export const createReservationService = async (data, session) => {
         hotelName = hotel.name;
     }
 
-    const occupiedRoomsNumber = await Reservation.countDocuments({
-        hotelId: hotelId,
-        checkInDate: { $lte: new Date(checkOut) },
-        checkOutDate: { $gte: new Date(checkIn) }
-    }).session(session);
+    const occupiedRoomsNumber = await reservationWModel
+        .countDocuments({
+            hotelId: hotelId,
+            checkInDate: { $lte: new Date(checkOut) },
+            checkOutDate: { $gte: new Date(checkIn) }
+        })
+        .session(session);
 
     if (occupiedRoomsNumber >= hotel.rooms) {
         const error = new Error("Sorry, we have sold out! Please try other dates.");
@@ -28,7 +31,7 @@ export const createReservationService = async (data, session) => {
         throw error;
     }
 
-    const reservation = new Reservation({
+    const reservation = new reservationWModel({
         fullName,
         email,
         hotelId,

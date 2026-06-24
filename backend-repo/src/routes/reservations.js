@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose"
-import Reservation from "../models/Reservation.js";
+import { globalWCon } from "../models/db.js";
+import { reservationRModel, reservationWModel } from "../models/Reservation.js";
 import * as validators from "../validators/reservation.js";
 import { createReservationService } from "../services/reservation.service.js";
 
@@ -8,7 +9,8 @@ const router = express.Router();
 
 // POST /api/v1/reservations
 router.post("/", validators.validateSaveReservation, async (req, res) => {
-    const session = await mongoose.startSession();
+
+    const session = await globalWCon.startSession();
     session.startTransaction();
 
     try {
@@ -40,7 +42,7 @@ router.get("/", validators.validateSearchReservation, async (req, res) => {
         if (email) searchCriterias.email = email;
         if (fullName) searchCriterias.fullName = fullName;
 
-        const reservations = await Reservation.find(searchCriterias);
+        const reservations = await reservationRModel.find(searchCriterias).select("-__v");
         res.json(reservations);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -50,7 +52,7 @@ router.get("/", validators.validateSearchReservation, async (req, res) => {
 // DELETE /api/v1/reservations/:id
 router.delete("/:id", validators.validateDeleteReservation, async (req, res) => {
     try {
-        const reservation = await Reservation.findByIdAndDelete(req.params.id);
+        const reservation = await reservationWModel.findByIdAndDelete(req.params.id);
         if (!reservation) return res.status(404).json({ error: "Reservation not found" });
 
         res.json({ message: "Reservation cancelled" });

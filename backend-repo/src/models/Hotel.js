@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { globalRCon, globalWCon } from "./db.js";
 
 const hotelSchema = new mongoose.Schema({
     hotelId: {
@@ -27,4 +28,5 @@ const hotelSchema = new mongoose.Schema({
     price: { type: Number }
 });
 
-export default mongoose.model("Hotel", hotelSchema);
+export const hotelRModel = globalRCon.model("Hotel", hotelSchema, "Hotel");
+export const hotelWModel = globalWCon.model("Hotel", hotelSchema, "Hotel");

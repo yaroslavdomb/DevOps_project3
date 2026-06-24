@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { globalRCon, globalWCon } from "./db.js";
 
 const reservationSchema = new mongoose.Schema({
     fullName: { type: String, required: true },
@@ -19,4 +20,5 @@ const reservationSchema = new mongoose.Schema({
     additionalReq: { type: String }
 });
 
-export default mongoose.model("Reservation", reservationSchema);
+export const reservationRModel = globalRCon.model("Reservation", reservationSchema, "Reservation");
+export const reservationWModel = globalWCon.model("Reservation", reservationSchema, "Reservation");
