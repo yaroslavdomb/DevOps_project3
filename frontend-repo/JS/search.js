@@ -1,7 +1,12 @@
 import { reservationTestData, searchByName, searchByEmail, config } from "../testData/testModule.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-    //const API_URL = "http://localhost:8080/api/hotels";
+
+    const BASE_URL =
+        window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+            ? "http://localhost:3000"
+            : "";
+    const RESERVATION_BASE_URL = `${BASE_URL}/api/v1/reservations`;
 
     const actReservationList = document.getElementById("active-reservations");
     const completedReservationList = document.getElementById("completed-reservations");
@@ -9,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let reservationData;
 
-    async function fetchReservations(type, searchKey) {
+    async function getReservations(params) {
         try {
             if (config.TEST_MODE_ON) {
                 const savedData = localStorage.getItem("my_reservations");
@@ -21,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     reservationData = searchByEmail(searchKey, currentData);
                 }
             } else {
-                const response = await fetch(API_URL);
+                const response = await fetch(RESERVATION_BASE_URL + params);
                 if (!response.ok) {
                     throw new Error(`Server error: ${response.status}`);
                 }
@@ -80,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const completedRes = [];
         const today = new Date();
         reservations.forEach((reservation) => {
-            const checkOutDate = new Date(reservation.check_out_date);
+            const checkOutDate = new Date(reservation.checkOutDate);
             if (checkOutDate > today) {
                 activeRes.push(reservation);
             } else {
@@ -93,10 +98,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 .map(
                     (reservation) => `
                         <tr>
-                            <td>${reservation.hotel_name}</td>
-                            <td>${reservation.check_in_date}</td>
-                            <td>${reservation.check_out_date}</td>
-                            <td>${reservation.special_requests || "---"}</td>
+                            <td>${reservation.hotelName}</td>
+                            <td>${reservation.checkInDate}</td>
+                            <td>${reservation.checkOutDate}</td>
+                            <td>${reservation.additionalReq || "---"}</td>
                             <td><button class="delete-btn" data-id="${reservation._id}">Delete</button></td>
                         </tr>
                     `
@@ -131,10 +136,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 .map(
                     (reservation) => `
                         <tr>
-                            <td>${reservation.hotel_name}</td>
-                            <td>${reservation.check_in_date}</td>
-                            <td>${reservation.check_out_date}</td>
-                            <td>${reservation.special_requests || "---"}</td>
+                            <td>${reservation.hotelName}</td>
+                            <td>${reservation.checkInDate}</td>
+                            <td>${reservation.checkOutDate}</td>
+                            <td>${reservation.additionalReq || "---"}</td>
                         </tr>
                     `
                 )
@@ -163,18 +168,22 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function getTypeAndPayload(event) {
-        const formElements = event.target.form.elements;
+    function getReservationSearchParams() {
         const name = document.getElementById("guest-name").value.trim();
         const email = document.getElementById("guest-email").value.trim();
+        const params = new URLSearchParams();
 
-        return name ? { type: "name", searchKey: name } : { type: "email", searchKey: email };
+        if (name) params.append("fullName", name);
+        if (email) params.append("email", email);
+
+        const queryString = params.toString();
+        return queryString ? `?${queryString}` : "";
     }
 
     searchBtn.addEventListener("click", (event) => {
         event.preventDefault();
-        const { type, searchKey } = getTypeAndPayload(event);
-        fetchReservations(type, searchKey);
+        const params = getReservationSearchParams(event);
+        getReservations(params);
 
         actReservationList.classList.remove("is-hidden");
         completedReservationList.classList.remove("is-hidden");
