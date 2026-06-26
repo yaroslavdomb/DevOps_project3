@@ -56,13 +56,12 @@ Folder structure:
 Иначе Mongoose может пропустить эту проверку при update-операциях. Для обычного save() всё будет работать как ожидается.
 
 //******************************************************************
-	LOCAL
+	LOCAL = manual check
 BE
 	1) run the following command in folder of backend
 		npm run dev
 
-DB
-	
+DB	
 	docker rm -f mongo_fin_proj
 	docker run -d --name mongo_fin_proj -p 27018:27018 d343c378 mongod --replSet rs0 --bind_ip_all --port 27018
 	docker exec -it mongo_fin_proj mongosh --port 27018 --eval "rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'localhost:27018'}]})"
@@ -134,3 +133,46 @@ BE (HAVE TO START AFTER DB!!!)
 	docker logs fp-be
 	1) Expected output is "Application initialized. Listening port 3000"
 	
+	
+INFRA
+	cd F:\LERNING\__2025\DevOps\PROJECTS\p3_K8_JENKINS_ARGO_ELK\infra-repo\docker-compose
+	docker compose up -d
+	
+	docker compose down -v
+	
+//******************************************************************
+	K8
+	
+namespace:
+	kubectl apply -f kubernetes/deployments/application-namespace.yaml
+storage:
+	kubectl apply -f kubernetes/volumes/db-storage.yaml
+config:
+	kubectl apply -f kubernetes/deployments/application-configmap.yaml
+secrets:
+	kubectl apply -f kubernetes/secrets/application-auth-secret.yaml
+
+Mongo:
+	kubectl apply -f kubernetes/deployments/mongodb-deployment.yaml
+	kubectl apply -f kubernetes/services/mongodb-service.yaml
+	
+Mongo-Express:
+	kubectl apply -f kubernetes/deployments/mongo-express-deployment.yaml
+	kubectl apply -f kubernetes/services/mongo-express-service.yaml
+	
+CHECKS
+	Show all the resources in clusters:
+		kubectl get all -n application
+	
+	Check the log of specific resource:
+		kubectl logs deployment/mongo-express -n application
+
+	port forwarding:
+		kubectl port-forward svc/mongo-express-service 8081:8081 -n application
+	then open 
+		http://localhost:8081
+		
+	restart POD:
+		kubectl rollout restart deployment/mongo-express -n application
+	chek the time POD on air:
+		kubectl get pods -n application
