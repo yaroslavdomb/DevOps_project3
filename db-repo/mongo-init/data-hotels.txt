@@ -1,0 +1,7 @@
+db.Hotel.insertMany([
+  { "hotelId": 0, "name": "Grand Horizon Resort", "rooms": 120, "photo": "https://example.com/photos/horizon.jpg", "description": "Beautiful oceanfront resort with a private beach.", "location": "Maldives, Male", "price": 250 },
+  { "hotelId": 1, "name": "Urban Elite Suites", "rooms": 45, "photo": "https://example.com/photos/urban.jpg", "description": "Modern business hotel in the center of the financial district.", "location": "Singapore", "price": 180 },
+  { "hotelId": 2, "name": "Alpine Nest Chalet", "rooms": 15, "photo": "https://example.com/photos/alpine.jpg", "description": "Cozy wooden chalet at the foot of the mountains.", "location": "Austria, Innsbruck", "price": 310 },
+  { "hotelId": 3, "name": "Old Town Heritage Inn", "rooms": 30, "photo": "https://example.com/photos/heritage.jpg", "description": "Authentic hotel in a historic 19th-century building.", "location": "Italy, Rome", "price": 140 },
+  { "hotelId": 4, "name": "EcoGreen Rainforest Lodge", "rooms": 22, "photo": "https://example.com/photos/eco.jpg", "description": "Eco-friendly bungalows surrounded by tropical rainforest.", "location": "Costa Rica", "price": 210 }
+]);
