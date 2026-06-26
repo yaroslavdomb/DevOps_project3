@@ -14,6 +14,14 @@ Folder structure:
 	├── Dockerfile
 	└── README.md
 
+	db-repo/
+	│
+	├── mongo-init/
+	│	├── init.js
+	│	├── data-hotels.txt
+	│	└── data-reservations.txt
+	└── README.md
+	
 	infra-repo/
 	│
 	├── kubernetes/
@@ -31,3 +39,98 @@ Folder structure:
 	│   └── backend-app.yaml
 	│
 	└── README.md
+	
+//******************************************************************
+
+
+// package.json
+{
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  }
+}
+
+
+Иначе Mongoose может пропустить эту проверку при update-операциях. Для обычного save() всё будет работать как ожидается.
+
+//******************************************************************
+	LOCAL
+BE
+	1) run the following command in folder of backend
+		npm run dev
+
+DB
+	
+	docker rm -f mongo_fin_proj
+	docker run -d --name mongo_fin_proj -p 27018:27018 d343c378 mongod --replSet rs0 --bind_ip_all --port 27018
+	docker exec -it mongo_fin_proj mongosh --port 27018 --eval "rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'localhost:27018'}]})"
+
+	Test DB:
+		docker exec -it mongo_fin_proj mongosh --port 27018 --eval "rs.status().ok"
+			Expected 1 for normal 
+		docker exec -it mongo_fin_proj mongosh --port 27018 --eval "rs.status()"
+			Expected stateStr: 'PRIMARY' && name: '192.168.1.104:27018' (if ipconfig gave 192.168.1.104 as local IPv4)
+		
+//******************************************************************
+	USER CREATION
+
+use finalProj
+
+db.createUser({ user: "readerUser", pwd: "Qwertyy345", roles: [{ role: "read", db: "finalProj" }]})
+db.createUser({ user: "writerUser", pwd: "Asdfghh789", roles: [{ role: "readWrite", db: "finalProj" }]})
+
+//******************************************************************
+	URLs:
+
+GET  	http://localhost:3000/health/live								= check for DB node readyness
+GET  	http://localhost:3000/health/ready								= check for DB readyness
+GET  	http://localhost:3000/api/v1/hotels								= short info about all the hotels
+GET  	http://localhost:3000/api/v1/hotels/:id							= full info about specific hotel
+POST	http://localhost:3000/api/v1/reservations						= create new reservation 
+GET  	http://localhost:3000/api/v1/reservations?email=test@test.com	= search specific reservation
+DELETE 	http://localhost:3000/api/v1/reservations/:id					= delete specific reservation
+
+//******************************************************************
+	RESERVATION PAYLOAD
+
+{ "fullName": "Jarik Dd", 
+"email": "jarik@example.com", 
+"hotelId": 0, 
+"hotelName": "Grand Horizon Resort", 
+"checkInDate": "2026-07-02T14:30:00.000Z", 
+"checkOutDate": "2026-07-10T19:15:00.000Z", 
+"additionalReq": "A GREAT(!!!) bone for my small pitbully girl" }
+
+//******************************************************************
+	DOCKERS
+	
+NET
+	docker network create fp-net
+	
+FE
+	cd F:\LERNING\__2025\DevOps\PROJECTS\p3_K8_JENKINS_ARGO_ELK\frontend-repo
+	docker build -t fe-img .
+	docker run -d -p 8080:80 --name fp-fe --rm --network fp-net fe-img
+	
+DB
+	cd F:\LERNING\__2025\DevOps\PROJECTS\p3_K8_JENKINS_ARGO_ELK\
+	docker build -t db-img .
+	docker run -d -p 27018:27018 --name fp-db --rm -e DB_PORT=27018 -e DB_HOST=fp-db --env-file .env --network fp-net db-img
+	
+	docker logs fp-db
+	1) docker exec -it fp-db bash
+	2) for pid in /proc/[0-9]*/; do echo -n "PID: $(basename $pid) -> "; cat $pid/cmdline; echo ""; done
+	3) For (2) expected output 
+		PID: 1 -> mongod--replSetrs0--port27018--bind_ip_all
+		PID: 298 -> bash
+		
+BE (HAVE TO START AFTER DB!!!)
+	cd F:\LERNING\__2025\DevOps\PROJECTS\p3_K8_JENKINS_ARGO_ELK\backend-repo
+	docker build -t be-img .
+	docker run -d -p 3000:3000 --name fp-be -e DB_PORT=27018 -e DB_HOST=fp-db --network fp-net be-img
+	
+	docker logs fp-be
+	1) Expected output is "Application initialized. Listening port 3000"
+	
