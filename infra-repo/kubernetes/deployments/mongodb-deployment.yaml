@@ -18,11 +18,13 @@ spec:
         - name: mongodb
           image: mongo:latest
           ports:
-            - containerPort: 27018
+            - containerPort: 27017
           command:
             - "mongod"
             - "--port"
             - "$(DB_PORT)"
+            - "--bind_ip_all"
+            - "--replSet=rs0"
           env:
             - name: DB_PORT
               valueFrom:

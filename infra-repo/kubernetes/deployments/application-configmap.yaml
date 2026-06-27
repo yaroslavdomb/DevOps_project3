@@ -7,6 +7,6 @@ data:
   REPLICA: "rs0"
   BE_PORT: "3000"
   DB_HOST: "localhost"
-  DB_PORT: "27018"
+  DB_PORT: "27017"
   DB_NAME: "finalProj"
   ME_PORT: "8081"

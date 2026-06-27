@@ -1,0 +1,65 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mongodb-create-users-job
+  namespace: application
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: mongodb-create-users
+          image: mongo:latest
+          env:
+            - name: ROOT_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: application-auth
+                  key: ROOT_NAME
+            - name: ROOT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: application-auth
+                  key: ROOT_PASS
+            - name: READER_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: application-auth
+                  key: READER_NAME
+            - name: READER_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: application-auth
+                  key: READER_PASS
+            - name: WRITER_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: application-auth
+                  key: WRITER_NAME
+            - name: WRITER_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: application-auth
+                  key: WRITER_PASS
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: application-configmap
+                  key: DB_NAME
+          command:
+            - bash
+            - "-c"
+            - |
+              until mongosh --host mongodb-0.mongodb-service.application.svc.cluster.local --port 27017 --eval "db.adminCommand('ping')" &>/dev/null; do
+                echo "Waiting for mongodb-0..."
+                sleep 3
+              done
+
+              mongosh --host mongodb-0.mongodb-service.application.svc.cluster.local --port 27017 --eval "
+                var adminDb = db.getSiblingDB('admin');
+                adminDb.createUser({ user: '${ROOT_NAME}', pwd: '${ROOT_PASS}', roles: ['root'] });
+
+                var targetDb = db.getSiblingDB('${DB_NAME}');
+                targetDb.createUser({ user: '${READER_NAME}', pwd: '${READER_PASS}', roles: [{ role: 'read', db: '${DB_NAME}' }] });
+                targetDb.createUser({ user: '${WRITER_NAME}', pwd: '${WRITER_PASS}', roles: [{ role: 'readWrite', db: '${DB_NAME}' }] });
+              "

@@ -19,10 +19,14 @@ spec:
           ports:
             - containerPort: 8081
           env:            
+            - name: MONGODB_SERVER
+              value: "mongodb-service"
+            - name: MONGODB_PORT
+              value: "27017"
             - name: ME_CONFIG_MONGODB_SERVER
               value: "mongodb-service"
             - name: ME_CONFIG_MONGODB_PORT
-              value: "27018"
+              value: "27017"
             - name: ME_CONFIG_MONGODB_ADMINUSERNAME
               valueFrom:
                 secretKeyRef:

@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mongodb-replica-init-job
+  namespace: application
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: mongodb-init
+          image: mongo:latest
+          env:
+            - name: REPLICAS
+              value: "3"
+            - name: REPLICA
+              valueFrom:
+                configMapKeyRef:
+                  name: application-configmap
+                  key: REPLICA
+          command:
+            - bash
+            - "-c"
+            - |
+              until mongosh --host mongodb-0.mongodb-service.application.svc.cluster.local --port 27017 --eval "db.adminCommand('ping')" &>/dev/null; do
+                echo "Waiting for mongodb-0..."
+                sleep 3
+              done
+
+              members=""
+              for i in $(seq 0 $((REPLICAS-1))); do
+                members="${members}{_id: $i, host: 'mongodb-${i}.mongodb-service.application.svc.cluster.local:27017'},"
+              done
+
+              mongosh --host mongodb-0.mongodb-service.application.svc.cluster.local --port 27017 --eval "
+                rs.initiate({ _id: '${REPLICA}', members: [${members%,}] })
+              "

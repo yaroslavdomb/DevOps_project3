@@ -16,6 +16,7 @@ Folder structure:
 
 	db-repo/
 	│
+	├── Dockerfile
 	├── mongo-init/
 	│	├── init.js
 	│	├── data-hotels.txt
@@ -25,10 +26,11 @@ Folder structure:
 	infra-repo/
 	│
 	├── kubernetes/
-	│   ├── secrets/
-	│   ├── volumes/
-	│   ├── services/
-	│   └── deployments/
+	│   ├── secrets/		// passwords 
+	│   ├── volumes/		// db volumes
+	│   ├── services/		// balancers/managers
+	│   ├── deployments/	// long term instances 
+	│	└── jobs/			// single time executed tasks
 	│
 	├── pipelines/
 	│   ├── build.Jenkinsfile
@@ -143,36 +145,65 @@ INFRA
 //******************************************************************
 	K8
 	
-namespace:
+cd /d F:\LERNING\__2025\DevOps\PROJECTS\p3_K8_JENKINS_ARGO_ELK\infra-repo\
+
+CLUSTER
+	kind get clusters
+	kind create cluster --name fin-proj
+	kind delete cluster --name fin-proj
+	kubectl config current-context	
+	
+Config:
 	kubectl apply -f kubernetes/deployments/application-namespace.yaml
-storage:
 	kubectl apply -f kubernetes/volumes/db-storage.yaml
-config:
 	kubectl apply -f kubernetes/deployments/application-configmap.yaml
-secrets:
 	kubectl apply -f kubernetes/secrets/application-auth-secret.yaml
 
 Mongo:
 	kubectl apply -f kubernetes/deployments/mongodb-deployment.yaml
 	kubectl apply -f kubernetes/services/mongodb-service.yaml
 	
+Job:
+	kubectl apply -f kubernetes/jobs/01-db-replica-init.yaml
+	kubectl apply -f kubernetes/jobs/02-db-create-users.yaml
+	
 Mongo-Express:
 	kubectl apply -f kubernetes/deployments/mongo-express-deployment.yaml
 	kubectl apply -f kubernetes/services/mongo-express-service.yaml
 	
+Port forwarding
+	kubectl port-forward svc/mongo-express-service 8081:8081 -n application
+	
 CHECKS
-	Show all the resources in clusters:
+	Show resources in clusters:
 		kubectl get all -n application
+		kubectl get pods -n application
 	
 	Check the log of specific resource:
-		kubectl logs deployment/mongo-express -n application
+		kubectl logs deployment/mongo-express -n application --tail=100
+		kubectl logs job/mongodb-replica-init-job -n application --tail=100
 
 	port forwarding:
 		kubectl port-forward svc/mongo-express-service 8081:8081 -n application
 	then open 
-		http://localhost:8081
+		http://localhost:8081 with admin/pass
 		
 	restart POD:
 		kubectl rollout restart deployment/mongo-express -n application
-	chek the time POD on air:
-		kubectl get pods -n application
+		kubectl rollout restart deployment/mongodb-0 -n application
+				
+		
+CHECK USER PER DB
+	kubectl exec -it mongodb-0 -n application -- mongosh --port 27017
+	use admin
+	db.getUsers();
+	use finalProj
+	db.getUsers();
+	
+CHECK MONGO UI
+	kubectl logs deployment/mongo-express -n application --tail=100
+
+REPLICA ACTIONS
+	kubectl exec -it mongodb-0 -n application -- mongosh --port 27017
+	rs.stepDown();			//switch primary. Run on P only! Could be validate in mongo express via Hostname field
+	rs.status()				// check status of replica nodes
