@@ -149,35 +149,56 @@ cd /d F:\LERNING\__2025\DevOps\PROJECTS\p3_K8_JENKINS_ARGO_ELK\infra-repo\
 
 CLUSTER
 	kind get clusters
-	kind create cluster --name fin-proj
 	kind delete cluster --name fin-proj
+	kind create cluster --config kind-config.yaml
 	kubectl config current-context	
-	
-Config:
-	kubectl apply -f kubernetes/deployments/application-namespace.yaml
-	kubectl apply -f kubernetes/volumes/db-storage.yaml
-	kubectl apply -f kubernetes/deployments/application-configmap.yaml
-	kubectl apply -f kubernetes/secrets/application-auth-secret.yaml
 
-Mongo:
-	kubectl apply -f kubernetes/deployments/mongodb-deployment.yaml
-	kubectl apply -f kubernetes/services/mongodb-service.yaml
-	
-Job:
-	kubectl apply -f kubernetes/jobs/01-db-replica-init.yaml
-	kubectl apply -f kubernetes/jobs/02-db-create-users.yaml
-	
-Mongo-Express:
-	kubectl apply -f kubernetes/deployments/mongo-express-deployment.yaml
-	kubectl apply -f kubernetes/services/mongo-express-service.yaml
-	
-Port forwarding
-	kubectl port-forward svc/mongo-express-service 8081:8081 -n application
+START 
+		Config:
+			kubectl apply -f kubernetes/deployments/application-namespace.yaml
+			kubectl apply -f kubernetes/deployments/nexus-namespace.yaml
+			kubectl apply -f kubernetes/volumes/nexus-storage.yaml
+			kubectl apply -f kubernetes/deployments/application-configmap.yaml
+			kubectl apply -f kubernetes/secrets/application-auth-secret.yaml
+		
+		Nexus:
+			kubectl apply -f kubernetes/deployments/nexus-deployment.yaml
+			kubectl apply -f kubernetes/services/nexus-service.yaml						
+				kubectl get pods -n nexus
+			kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml // setup ingress
+				kubectl get pods -n ingress-nginx									// check ingress control. Once started - edit the data (next command)  
+			kubectl edit configmap ingress-nginx-controller -n ingress-nginx		// Add "data": {"proxy-set-headers": "nexus/nexus-custom-headers"}
+			kubectl apply -f kubernetes/ingresses/ingress-configmap.yaml
+			kubectl rollout restart deployment/ingress-nginx-controller -n ingress-nginx	// restart ingress
+			kubectl apply -f kubernetes/ingresses/nexus-ingress.yaml
+				kubectl get ingress -n nexus
+				kubectl port-forward svc/nexus-service 8081:8081 8083:8083 -n nexus
+				kubectl exec -it statefulset/nexus -n nexus -- cat /nexus-data/admin.password == 150bf239-88a8-4efd-9427-5c942a7d00b5 --> 
+					New password 	= PPP123
+					Nexus name 		= nexus-repo
+					Select settings -> Repository --> create repo -> docker(hosted) -> select HTTP && 8083 --> Create 
+					Select settings -> Security --> Realms --> move Docker Bearer Token to ACTIVE --> Save
+					System --> capabilities --> create --> Base URL --> set "http://nexus.local"
+		Mongo:
+			kubectl apply -f kubernetes/deployments/mongodb-deployment.yaml
+			kubectl apply -f kubernetes/services/mongodb-service.yaml
+			
+		Jobs:
+			kubectl apply -f kubernetes/jobs/01-db-replica-init.yaml
+			kubectl apply -f kubernetes/jobs/02-db-create-users.yaml
+			
+		Mongo-Express:
+			kubectl apply -f kubernetes/deployments/mongo-express-deployment.yaml
+			kubectl apply -f kubernetes/services/mongo-express-service.yaml
+			
+		Port forwarding
+			kubectl port-forward svc/mongo-express-service 8081:8081 -n application
 	
 CHECKS
 	Show resources in clusters:
 		kubectl get all -n application
 		kubectl get pods -n application
+		kubectl get pods -n nexus
 	
 	Check the log of specific resource:
 		kubectl logs deployment/mongo-express -n application --tail=100
@@ -207,3 +228,24 @@ REPLICA ACTIONS
 	kubectl exec -it mongodb-0 -n application -- mongosh --port 27017
 	rs.stepDown();			//switch primary. Run on P only! Could be validate in mongo express via Hostname field
 	rs.status()				// check status of replica nodes
+	
+CHECK DIFF THINGS
+	kubectl get storageclass
+
+	
+How to tag images:
+	docker tag myimage:latest localhost:8081/repository/nexus-repo/myimage:latest
+	docker push localhost:8081/repository/nexus-repo/myimage:latest	
+
+
+Add into C:\Windows\System32\drivers\etc\hosts:
+127.0.0.1 nexus.local
+
+
+Secret in K8
+	kubectl create secret tls nexus-tls --cert=nexus.local.crt --key=nexus.local.key -n nexus
+		kubectl get secrets -n nexus
+		kubectl get secret nexus-tls -n nexus -o yaml
+	
+	PowerShell (Admin)
+	Import-Certificate -FilePath "C:\Users\jarik\nexus.local.crt" -CertStoreLocation Cert:\LocalMachine\Root
