@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mongodb-pvc
-  namespace: application
+  name: nexus-pvc
+  namespace: nexus
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 25Mi
+      storage: 10Gi
