@@ -14,9 +14,11 @@ spec:
       labels:
         app: mongodb
     spec:
+      imagePullSecrets:
+        - name: nexus-pull-secret
       containers:
         - name: mongodb
-          image: mongo:latest
+          image: nexus.local/mongo:8
           ports:
             - containerPort: 27017
           command:

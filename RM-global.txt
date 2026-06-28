@@ -151,12 +151,13 @@ CLUSTER
 	kind get clusters
 	kind delete cluster --name fin-proj
 	kind create cluster --config kind-config.yaml
-	kubectl config current-context	
+		kubectl config current-contex
 
 START 
 		Config:
 			kubectl apply -f kubernetes/deployments/application-namespace.yaml
 			kubectl apply -f kubernetes/deployments/nexus-namespace.yaml
+			kubectl apply -f kubernetes/secrets/nexus-pull-secret.yaml
 			kubectl apply -f kubernetes/volumes/nexus-storage.yaml
 			kubectl apply -f kubernetes/deployments/application-configmap.yaml
 			kubectl apply -f kubernetes/secrets/application-auth-secret.yaml
@@ -170,15 +171,17 @@ START
 			kubectl edit configmap ingress-nginx-controller -n ingress-nginx		// Add "data": {"proxy-set-headers": "nexus/nexus-custom-headers"}
 			kubectl apply -f kubernetes/ingresses/ingress-configmap.yaml
 			kubectl rollout restart deployment/ingress-nginx-controller -n ingress-nginx	// restart ingress
+			kubectl create secret tls nexus-tls --cert=kubernetes/secrets/nexus.local.crt --key=kubernetes/secrets/nexus.local.key -n nexus	// import again secret for CA
 			kubectl apply -f kubernetes/ingresses/nexus-ingress.yaml
 				kubectl get ingress -n nexus
-				kubectl port-forward svc/nexus-service 8081:8081 8083:8083 -n nexus
-				kubectl exec -it statefulset/nexus -n nexus -- cat /nexus-data/admin.password == 150bf239-88a8-4efd-9427-5c942a7d00b5 --> 
+				kubectl port-forward svc/nexus-service 8081:8081 -n nexus
+				kubectl exec -it statefulset/nexus -n nexus -- cat /nexus-data/admin.password == 1cf0343a-61f2-43f4-ba85-e1b28890f48e --> 
 					New password 	= PPP123
 					Nexus name 		= nexus-repo
-					Select settings -> Repository --> create repo -> docker(hosted) -> select HTTP && 8083 --> Create 
+					Select settings -> Repository --> create repo -> docker(hosted) -> select HTTP, anonimous && 8083 --> Create 
 					Select settings -> Security --> Realms --> move Docker Bearer Token to ACTIVE --> Save
-					System --> capabilities --> create --> Base URL --> set "http://nexus.local"
+					System --> capabilities --> create --> Base URL --> set "http://nexus.local"			
+			
 		Mongo:
 			kubectl apply -f kubernetes/deployments/mongodb-deployment.yaml
 			kubectl apply -f kubernetes/services/mongodb-service.yaml
@@ -199,6 +202,8 @@ CHECKS
 		kubectl get all -n application
 		kubectl get pods -n application
 		kubectl get pods -n nexus
+		kubectl describe pod mongodb-0 -n application
+		kubectl exec -it mongodb-0 -n application -- mongosh --port 27017
 	
 	Check the log of specific resource:
 		kubectl logs deployment/mongo-express -n application --tail=100
@@ -232,20 +237,37 @@ REPLICA ACTIONS
 CHECK DIFF THINGS
 	kubectl get storageclass
 
-	
-How to tag images:
-	docker tag myimage:latest localhost:8081/repository/nexus-repo/myimage:latest
-	docker push localhost:8081/repository/nexus-repo/myimage:latest	
-
 
 Add into C:\Windows\System32\drivers\etc\hosts:
 127.0.0.1 nexus.local
 
 
 Secret in K8
+	// create secret (that will be used by ingress) and add it to K8
 	kubectl create secret tls nexus-tls --cert=nexus.local.crt --key=nexus.local.key -n nexus
 		kubectl get secrets -n nexus
 		kubectl get secret nexus-tls -n nexus -o yaml
 	
-	PowerShell (Admin)
+	// In PowerShell as Admin = set this certificate as trusted for my OS
 	Import-Certificate -FilePath "C:\Users\jarik\nexus.local.crt" -CertStoreLocation Cert:\LocalMachine\Root
+	
+	// Create secret file with credentials to acces to Neksus - already created
+	kubectl create secret docker-registry nexus-pull-secret --docker-server=nexus.local --docker-username=admin --docker-password=PPP123 --namespace=application --dry-run=client -o yaml > kubernetes/secrets/nexus-pull-secret.yaml
+
+	
+	
+DOCKER IMAGES:
+	How to tag images:
+		docker tag myimage:latest localhost:8081/repository/nexus-repo/myimage:latest
+		docker push localhost:8081/repository/nexus-repo/myimage:latest	
+
+	docker pull mongo:8
+	docker tag mongo:8 nexus.local/mongo:8
+	docker push nexus.local/mongo:8
+
+	docker pull mongo-express:1.0.2
+	docker tag mongo-express:1.0.2 nexus.local/mongo-express:1.0.2
+	docker push nexus.local/mongo-express:1.0.2
+	
+	docker pull nexus.local/mongo:8		// check connectivity to mongo
+	docker pull

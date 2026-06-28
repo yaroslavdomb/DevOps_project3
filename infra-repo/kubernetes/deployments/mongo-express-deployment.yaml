@@ -13,9 +13,11 @@ spec:
       labels:
         app: mongo-express
     spec:
+      imagePullSecrets:
+        - name: nexus-pull-secret
       containers:
         - name: mongo-express
-          image: mongo-express:latest
+          image: nexus.local/mongo-express:1.0.2
           ports:
             - containerPort: 8081
           env:            
