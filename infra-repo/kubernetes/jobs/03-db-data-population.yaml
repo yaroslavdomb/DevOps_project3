@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: mongodb-data-population-job
-  namespace: application
+  namespace: database
 spec:
   template:
     spec:
@@ -40,16 +40,16 @@ spec:
             - bash
             - "-c"
             - |
-              until mongosh "mongodb://mongodb-service.application.svc.cluster.local:27017/?replicaSet=${REPLICA}" --eval "db.adminCommand('ping')" &>/dev/null; do
+              until mongosh "mongodb://mongodb-service.database.svc.cluster.local:27017/?replicaSet=${REPLICA}" --eval "db.adminCommand('ping')" &>/dev/null; do
                 echo "Waiting for mongodb cluster..."
                 sleep 3
               done
 
-              mongosh "mongodb://mongodb-service.application.svc.cluster.local:27017/${DB_NAME}?replicaSet=${REPLICA}" \
+              mongosh "mongodb://mongodb-service.database.svc.cluster.local:27017/${DB_NAME}?replicaSet=${REPLICA}" \
                 -u "${WRITER_NAME}" -p "${WRITER_PASS}" --authenticationDatabase "${DB_NAME}" \
                 -f /scripts/db-populate-hotels.js
 
-              mongosh "mongodb://mongodb-service.application.svc.cluster.local:27017/${DB_NAME}?replicaSet=${REPLICA}" \
+              mongosh "mongodb://mongodb-service.database.svc.cluster.local:27017/${DB_NAME}?replicaSet=${REPLICA}" \
                 -u "${WRITER_NAME}" -p "${WRITER_PASS}" --authenticationDatabase "${DB_NAME}" \
                 -f /scripts/db-populate-reservations.js
       volumes:

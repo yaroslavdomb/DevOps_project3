@@ -27,4 +27,4 @@ spec:
                   name: backend-configmap
                   key: DB_PORT
             - name: DB_HOST
-              value: "mongodb-service"
+              value: "mongodb-service.database.svc.cluster.local"

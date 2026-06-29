@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: mongodb-create-users-job
-  namespace: application
+  namespace: database
 spec:
   template:
     spec:
@@ -52,12 +52,12 @@ spec:
             - bash
             - "-c"
             - |
-              until mongosh --host mongodb-0.mongodb-service.application.svc.cluster.local --port 27017 --eval "db.adminCommand('ping')" &>/dev/null; do
+              until mongosh --host mongodb-0.mongodb-service.database.svc.cluster.local --port 27017 --eval "db.adminCommand('ping')" &>/dev/null; do
                 echo "Waiting for mongodb-0..."
                 sleep 3
               done
 
-              mongosh --host mongodb-0.mongodb-service.application.svc.cluster.local --port 27017 --eval "
+              mongosh --host mongodb-0.mongodb-service.database.svc.cluster.local --port 27017 --eval "
                 var adminDb = db.getSiblingDB('admin');
                 adminDb.createUser({ user: '${ROOT_NAME}', pwd: '${ROOT_PASS}', roles: ['root'] });
 
