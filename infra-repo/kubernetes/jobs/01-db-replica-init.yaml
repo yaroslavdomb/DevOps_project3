@@ -7,9 +7,11 @@ spec:
   template:
     spec:
       restartPolicy: OnFailure
+      imagePullSecrets:
+        - name: nexus-pull-secret
       containers:
         - name: mongodb-init
-          image: mongo:latest
+          image: nexus.local/mongo:8
           env:
             - name: REPLICAS
               value: "3"
