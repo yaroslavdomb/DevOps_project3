@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: application
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      imagePullSecrets:
+        - name: nexus-pull-secret
+      containers:
+        - name: backend
+          image: nexus.local/be-img:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: application-configmap
+                  key: DB_PORT
+            - name: DB_HOST
+              value: "mongodb-service"
