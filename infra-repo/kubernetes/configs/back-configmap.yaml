@@ -5,3 +5,4 @@ metadata:
   namespace: backend
 data:
   BE_PORT: "3000"
+  DB_PORT: "27017"

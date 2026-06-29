@@ -24,7 +24,7 @@ spec:
             - name: DB_PORT
               valueFrom:
                 configMapKeyRef:
-                  name: application-configmap
+                  name: backend-configmap
                   key: DB_PORT
             - name: DB_HOST
               value: "mongodb-service"
