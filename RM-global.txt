@@ -152,11 +152,6 @@ CLUSTER
 	kind delete cluster --name fin-proj
 	kind create cluster --config kind-config.yaml
 		kubectl config current-contex
-		
-		
-kubectl apply -f kubernetes/ingresses/back-ingress.yaml
-			kubectl apply -f kubernetes/ingresses/front-ingress.yaml		
-		
 
 START 
 		Namespaces:
@@ -164,32 +159,51 @@ START
 			kubectl apply -f kubernetes/namespaces/db-namespace.yaml
 			kubectl apply -f kubernetes/namespaces/frontend-namespace.yaml
 			kubectl apply -f kubernetes/namespaces/nexus-namespace.yaml
+		
+		Secre	
+			kubectl apply -f kubernetes/secrets/be-nexus-pull-secret.yaml
+			kubectl apply -f kubernetes/secrets/fe-nexus-pull-secret.yaml
+			kubectl apply -f kubernetes/secrets/db-nexus-pull-secret.yaml
+			kubectl apply -f kubernetes/secrets/db-auth-secret.yaml
 			
-			
-			kubectl apply -f kubernetes/secrets/nexus-pull-secret.yaml
+		Volumes:
 			kubectl apply -f kubernetes/volumes/nexus-storage.yaml
-			kubectl apply -f kubernetes/deployments/application-configmap.yaml
-			kubectl apply -f kubernetes/secrets/application-auth-secret.yaml
+		
+		Configs:
+			kubectl apply -f kubernetes/configs/back-configmap.yaml
+			kubectl apply -f kubernetes/configs/db-configmap.yaml
+			kubectl apply -f kubernetes/configs/db-test-data-configmap.yaml
 			
 		Nexus:
 			kubectl apply -f kubernetes/deployments/nexus-deployment.yaml
 			kubectl apply -f kubernetes/services/nexus-service.yaml						
 				kubectl get pods -n nexus
 			kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml // setup ingress
-				kubectl get pods -n ingress-nginx									// check ingress control. Once started - edit the data (next command)  
-			kubectl edit configmap ingress-nginx-controller -n ingress-nginx		// Add "data": {"proxy-set-headers": "nexus/nexus-custom-headers"}
+				// check ingress control. Once started (run 1/1) - edit the data (next command)
+				kubectl get pods -n ingress-nginx
+				kubectl logs ingress-nginx-controller-54754544b9-9dfng -n ingress-nginx
+				// Add "data": {"proxy-set-headers": "nexus/nexus-custom-headers"}
+			kubectl edit configmap ingress-nginx-controller -n ingress-nginx
 			kubectl apply -f kubernetes/ingresses/ingress-configmap.yaml
-			kubectl rollout restart deployment/ingress-nginx-controller -n ingress-nginx	// restart ingress
-			kubectl create secret tls nexus-tls --cert=kubernetes/secrets/nexus.local.crt --key=kubernetes/secrets/nexus.local.key -n nexus	// import again secret for CA
+			kubectl rollout restart deployment/ingress-nginx-controller -n ingress-nginx
+				// import again secret for CA
+			kubectl create secret tls nexus-tls --cert=kubernetes/secrets/nexus.local.crt --key=kubernetes/secrets/nexus.local.key -n nexus
 			kubectl apply -f kubernetes/ingresses/nexus-ingress.yaml
 				kubectl get ingress -n nexus
 				kubectl port-forward svc/nexus-service 8081:8081 -n nexus
-				kubectl exec -it statefulset/nexus -n nexus -- cat /nexus-data/admin.password == 1cf0343a-61f2-43f4-ba85-e1b28890f48e --> 
+				kubectl exec -it statefulset/nexus -n nexus -- cat /nexus-data/admin.password 
+					== 2778a719-1489-4236-8cc2-fed078d6a9e4 --> 
 					New password 	= PPP123
 					Nexus name 		= nexus-repo
 					Select settings -> Repository --> create repo -> docker(hosted) -> select HTTP, anonimous && 8083 --> Create 
 					Select settings -> Security --> Realms --> move Docker Bearer Token to ACTIVE --> Save
-					System --> capabilities --> create --> Base URL --> set "http://nexus.local"			
+					System --> capabilities --> create --> Base URL --> set "http://nexus.local"
+
+		Push data:
+			docker push nexus.local/mongo:8
+			docker push nexus.local/mongo-express:1.0.2
+			docker push nexus.local/be-img:latest
+			docker push nexus.local/fe-img:latest
 			
 		Mongo:
 			kubectl apply -f kubernetes/deployments/mongodb-deployment.yaml
@@ -198,7 +212,8 @@ START
 		Jobs:
 			kubectl apply -f kubernetes/jobs/01-db-replica-init.yaml
 			kubectl apply -f kubernetes/jobs/02-db-create-users.yaml
-			kubectl apply -f kubernetes/configs/db-test-data-configmap.yaml
+				// make sure to start data populating after user creation
+				kubectl get pods -n database
 			kubectl apply -f kubernetes/jobs/03-db-data-population.yaml
 			
 		Mongo-Express:
@@ -217,24 +232,31 @@ START
 			kubectl apply -f kubernetes/ingresses/back-ingress.yaml
 			kubectl apply -f kubernetes/ingresses/front-ingress.yaml
 		
+		__Checks__
+			kubectl get pods -n frontend
+			kubectl get pods -n backend
+			kubectl get pods -n database
 		
-		Port forwarding
-			kubectl port-forward svc/mongo-express-service 8081:8081 -n application
-			kubectl port-forward svc/frontend-service 8060:80 -n application
-			kubectl port-forward svc/backend-service 3000:3000 -n application
+		__Port forwarding__
+			kubectl port-forward svc/mongo-express-service 8081:8081 -n database
+			kubectl port-forward svc/frontend-service 8060:80 -n frontend
+			kubectl port-forward svc/backend-service 3000:3000 -n backend
 	
 CHECKS
 	Show resources in clusters:
 		kubectl get all -n application
-		kubectl get pods -n application
-		kubectl get pods -n nexus
+		kubectl get pods -n database
 		kubectl describe pod mongodb-0 -n application
 		kubectl get jobs -n application
 		kubectl exec -it mongodb-0 -n application -- mongosh --port 27017
 	
 	Check the log of specific resource:
+		kubectl logs ingress-nginx-controller-54754544b9-9dfng -n ingress-nginx
 		kubectl logs deployment/mongo-express -n application --tail=100
 		kubectl logs job/mongodb-replica-init-job -n application --tail=100
+		kubectl logs backend-657c66b47d-4d95t -n backend
+		kubectl logs mongodb-create-users-job-pmmz5 -n database
+		kubectl get endpoints backend-service -n backend
 
 	port forwarding:
 		kubectl port-forward svc/mongo-express-service 8081:8081 -n application
