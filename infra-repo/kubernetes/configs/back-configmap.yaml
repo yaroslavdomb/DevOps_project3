@@ -4,4 +4,4 @@ metadata:
   name: backend-configmap
   namespace: backend
 data:
-  BE_PORT: "3000"
+  BE_PORT: "3000" 
