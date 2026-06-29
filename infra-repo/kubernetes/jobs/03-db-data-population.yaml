@@ -1,0 +1,58 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mongodb-data-population-job
+  namespace: application
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      imagePullSecrets:
+        - name: nexus-pull-secret
+      containers:
+        - name: mongodb-data-populator
+          image: nexus.local/mongo:8
+          env:
+            - name: WRITER_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: application-auth
+                  key: WRITER_NAME
+            - name: WRITER_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: application-auth
+                  key: WRITER_PASS
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: application-configmap
+                  key: DB_NAME
+            - name: REPLICA
+              valueFrom:
+                configMapKeyRef:
+                  name: application-configmap
+                  key: REPLICA
+          volumeMounts:
+            - name: populate-scripts
+              mountPath: /scripts
+          command:
+            - bash
+            - "-c"
+            - |
+              until mongosh "mongodb://mongodb-service.application.svc.cluster.local:27017/?replicaSet=${REPLICA}" --eval "db.adminCommand('ping')" &>/dev/null; do
+                echo "Waiting for mongodb cluster..."
+                sleep 3
+              done
+
+              mongosh "mongodb://mongodb-service.application.svc.cluster.local:27017/${DB_NAME}?replicaSet=${REPLICA}" \
+                -u "${WRITER_NAME}" -p "${WRITER_PASS}" --authenticationDatabase "${DB_NAME}" \
+                -f /scripts/db-populate-hotels.js
+
+              mongosh "mongodb://mongodb-service.application.svc.cluster.local:27017/${DB_NAME}?replicaSet=${REPLICA}" \
+                -u "${WRITER_NAME}" -p "${WRITER_PASS}" --authenticationDatabase "${DB_NAME}" \
+                -f /scripts/db-populate-reservations.js
+      volumes:
+        - name: populate-scripts
+          configMap:
+            name: mongodb-populate-data-config
