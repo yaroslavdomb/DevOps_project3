@@ -18,7 +18,7 @@ spec:
             - name: REPLICA
               valueFrom:
                 configMapKeyRef:
-                  name: application-configmap
+                  name: db-configmap
                   key: REPLICA
           command:
             - bash

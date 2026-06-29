@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mongodb
-  namespace: application
+  namespace: database
 spec:
   serviceName: mongodb-service
   replicas: 3
@@ -31,7 +31,7 @@ spec:
             - name: DB_PORT
               valueFrom:
                 configMapKeyRef:
-                  name: application-configmap
+                  name: db-configmap
                   key: DB_PORT
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:

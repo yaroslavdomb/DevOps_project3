@@ -1,11 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: application-configmap
-  namespace: application
+  name: db-configmap
+  namespace: database
 data:
   REPLICA: "rs0"
-  BE_PORT: "3000"
   DB_HOST: "localhost"
   DB_PORT: "27017"
   DB_NAME: "finalProj"

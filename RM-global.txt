@@ -159,9 +159,13 @@ kubectl apply -f kubernetes/ingresses/back-ingress.yaml
 		
 
 START 
-		Config:
-			kubectl apply -f kubernetes/deployments/application-namespace.yaml
-			kubectl apply -f kubernetes/deployments/nexus-namespace.yaml
+		Namespaces:
+			kubectl apply -f kubernetes/namespaces/backend-namespace.yaml
+			kubectl apply -f kubernetes/namespaces/db-namespace.yaml
+			kubectl apply -f kubernetes/namespaces/frontend-namespace.yaml
+			kubectl apply -f kubernetes/namespaces/nexus-namespace.yaml
+			
+			
 			kubectl apply -f kubernetes/secrets/nexus-pull-secret.yaml
 			kubectl apply -f kubernetes/volumes/nexus-storage.yaml
 			kubectl apply -f kubernetes/deployments/application-configmap.yaml
@@ -194,7 +198,7 @@ START
 		Jobs:
 			kubectl apply -f kubernetes/jobs/01-db-replica-init.yaml
 			kubectl apply -f kubernetes/jobs/02-db-create-users.yaml
-			kubectl apply -f kubernetes/deployments/db-configmap.yaml
+			kubectl apply -f kubernetes/configs/db-test-data-configmap.yaml
 			kubectl apply -f kubernetes/jobs/03-db-data-population.yaml
 			
 		Mongo-Express:

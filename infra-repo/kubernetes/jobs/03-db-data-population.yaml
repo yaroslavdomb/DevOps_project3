@@ -26,12 +26,12 @@ spec:
             - name: DB_NAME
               valueFrom:
                 configMapKeyRef:
-                  name: application-configmap
+                  name: db-configmap
                   key: DB_NAME
             - name: REPLICA
               valueFrom:
                 configMapKeyRef:
-                  name: application-configmap
+                  name: db-configmap
                   key: REPLICA
           volumeMounts:
             - name: populate-scripts
