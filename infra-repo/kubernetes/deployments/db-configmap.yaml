@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongodb-populate-data-config
+  namespace: application
+data:
+  db-populate-hotels.js: |
+    db.Hotel.insertMany([
+      { "hotelId": 0, "name": "Grand Horizon Resort", "rooms": 120, "photo": "https://example.com/photos/horizon.jpg", "description": "Beautiful oceanfront resort with a private beach.", "location": "Maldives, Male", "price": 250 },
+      { "hotelId": 1, "name": "Urban Elite Suites", "rooms": 45, "photo": "https://example.com/photos/urban.jpg", "description": "Modern business hotel in the center of the financial district.", "location": "Singapore", "price": 180 },
+      { "hotelId": 2, "name": "Alpine Nest Chalet", "rooms": 15, "photo": "https://example.com/photos/alpine.jpg", "description": "Cozy wooden chalet at the foot of the mountains.", "location": "Austria, Innsbruck", "price": 310 },
+      { "hotelId": 3, "name": "Old Town Heritage Inn", "rooms": 30, "photo": "https://example.com/photos/heritage.jpg", "description": "Authentic hotel in a historic 19th-century building.", "location": "Italy, Rome", "price": 140 },
+      { "hotelId": 4, "name": "EcoGreen Rainforest Lodge", "rooms": 22, "photo": "https://example.com/photos/eco.jpg", "description": "Eco-friendly bungalows surrounded by tropical rainforest.", "location": "Costa Rica", "price": 210 }
+    ]);
+
+  db-populate-reservations.js: |
+    db.Reservation.insertMany([
+      { "fullName": "John Doe", "email": "johndoe@example.com", "hotelId": 0, "hotelName": "Grand Horizon Resort", "checkInDate": "2026-07-01T14:00:00.000Z", "checkOutDate": "2026-07-10T12:00:00.000Z", "additionalReq": "Baby cot required" },
+      { "fullName": "Alice Smith", "email": "asmith@example.com", "hotelId": 0, "hotelName": "Grand Horizon Resort", "checkInDate": "2026-07-12T14:00:00.000Z", "checkOutDate": "2026-07-19T12:00:00.000Z", "additionalReq": "High floor request" },
+      { "fullName": "Michael Brown", "email": "mbrown@example.com", "hotelId": 0, "hotelName": "Grand Horizon Resort", "checkInDate": "2026-08-01T14:00:00.000Z", "checkOutDate": "2026-08-05T12:00:00.000Z", "additionalReq": "" },
+      { "fullName": "Emma Watson", "email": "emma@example.com", "hotelId": 0, "hotelName": "Grand Horizon Resort", "checkInDate": "2026-08-10T14:00:00.000Z", "checkOutDate": "2026-08-15T12:00:00.000Z", "additionalReq": "Late check-in" },
+      { "fullName": "David Miller", "email": "miller@example.com", "hotelId": 0, "hotelName": "Grand Horizon Resort", "checkInDate": "2026-09-03T14:00:00.000Z", "checkOutDate": "2026-09-13T12:00:00.000Z", "additionalReq": "Courtyard view" },
+      { "fullName": "Sarah Connor", "email": "sconnor@example.com", "hotelId": 0, "hotelName": "Grand Horizon Resort", "checkInDate": "2026-09-20T14:00:00.000Z", "checkOutDate": "2026-09-25T12:00:00.000Z", "additionalReq": "Allergy-friendly room" },
+      { "fullName": "James Bond", "email": "007@example.com", "hotelId": 1, "hotelName": "Urban Elite Suites", "checkInDate": "2026-07-05T14:00:00.000Z", "checkOutDate": "2026-07-08T12:00:00.000Z", "additionalReq": "Near elevator" },
+      { "fullName": "Linda Hamilton", "email": "linda@example.com", "hotelId": 1, "hotelName": "Urban Elite Suites", "checkInDate": "2026-07-15T14:00:00.000Z", "checkOutDate": "2026-07-22T12:00:00.000Z", "additionalReq": "Quiet room" },
+      { "fullName": "Tom Cruise", "email": "tcruise@example.com", "hotelId": 1, "hotelName": "Urban Elite Suites", "checkInDate": "2026-07-25T14:00:00.000Z", "checkOutDate": "2026-07-30T12:00:00.000Z", "additionalReq": "Breakfast in room" },
+      { "fullName": "Bruce Wayne", "email": "bruce@waynecorp.com", "hotelId": 1, "hotelName": "Urban Elite Suites", "checkInDate": "2026-08-02T14:00:00.000Z", "checkOutDate": "2026-08-09T12:00:00.000Z", "additionalReq": "" },
+      { "fullName": "Jessica Alba", "email": "jalba@example.com", "hotelId": 1, "hotelName": "Urban Elite Suites", "checkInDate": "2026-08-14T14:00:00.000Z", "checkOutDate": "2026-08-17T12:00:00.000Z", "additionalReq": "Extra blanket" },
+      { "fullName": "Steve Irwin", "email": "steve@example.com", "hotelId": 1, "hotelName": "Urban Elite Suites", "checkInDate": "2026-08-20T14:00:00.000Z", "checkOutDate": "2026-08-23T12:00:00.000Z", "additionalReq": "Airport shuttle" },
+      { "fullName": "Robert Downey", "email": "rdj@example.com", "hotelId": 1, "hotelName": "Urban Elite Suites", "checkInDate": "2026-09-01T14:00:00.000Z", "checkOutDate": "2026-09-05T12:00:00.000Z", "additionalReq": "" },
+      { "fullName": "Chris Evans", "email": "cevans@example.com", "hotelId": 2, "hotelName": "Alpine Nest Chalet", "checkInDate": "2026-12-01T14:00:00.000Z", "checkOutDate": "2026-12-08T12:00:00.000Z", "additionalReq": "Ski storage space" },
+      { "fullName": "Alex Garcia", "email": "garcia@example.com", "hotelId": 2, "hotelName": "Alpine Nest Chalet", "checkInDate": "2026-12-10T14:00:00.000Z", "checkOutDate": "2026-12-15T12:00:00.000Z", "additionalReq": "" },
+      { "fullName": "Tom Hardy", "email": "hardy@example.com", "hotelId": 2, "hotelName": "Alpine Nest Chalet", "checkInDate": "2026-12-18T14:00:00.000Z", "checkOutDate": "2026-12-25T12:00:00.000Z", "additionalReq": "Room with fireplace" },
+      { "fullName": "Peter Parker", "email": "spidey@example.com", "hotelId": 2, "hotelName": "Alpine Nest Chalet", "checkInDate": "2026-12-26T14:00:00.000Z", "checkOutDate": "2027-01-02T12:00:00.000Z", "additionalReq": "Extra heating" },
+      { "fullName": "Mary Watson", "email": "mj@example.com", "hotelId": 2, "hotelName": "Alpine Nest Chalet", "checkInDate": "2027-01-05T14:00:00.000Z", "checkOutDate": "2027-01-12T12:00:00.000Z", "additionalReq": "" },
+      { "fullName": "Tony Stark", "email": "stark@example.com", "hotelId": 2, "hotelName": "Alpine Nest Chalet", "checkInDate": "2027-01-15T14:00:00.000Z", "checkOutDate": "2027-01-20T12:00:00.000Z", "additionalReq": "Balcony view" },
+      { "fullName": "Clark Kent", "email": "superman@example.com", "hotelId": 3, "hotelName": "Old Town Heritage Inn", "checkInDate": "2026-07-04T14:00:00.000Z", "checkOutDate": "2026-07-07T12:00:00.000Z", "additionalReq": "" },
+      { "fullName": "Lois Lane", "email": "llane@example.com", "hotelId": 3, "hotelName": "Old Town Heritage Inn", "checkInDate": "2026-07-10T14:00:00.000Z", "checkOutDate": "2026-07-15T12:00:00.000Z", "additionalReq": "Double bed" },
+      { "fullName": "Diana Prince", "email": "diana@example.com", "hotelId": 3, "hotelName": "Old Town Heritage Inn", "checkInDate": "2026-07-18T14:00:00.000Z", "checkOutDate": "2026-07-21T12:00:00.000Z", "additionalReq": "Quiet room" },
+      { "fullName": "Barry Allen", "email": "flash@example.com", "hotelId": 3, "hotelName": "Old Town Heritage Inn", "checkInDate": "2026-08-01T14:00:00.000Z", "checkOutDate": "2026-08-10T12:00:00.000Z", "additionalReq": "Early check-in" },
+      { "fullName": "Oliver Queen", "email": "arrow@example.com", "hotelId": 3, "hotelName": "Old Town Heritage Inn", "checkInDate": "2026-08-15T14:00:00.000Z", "checkOutDate": "2026-08-18T12:00:00.000Z", "additionalReq": "" },
+      { "fullName": "Bruce Banner", "email": "hulk@example.com", "hotelId": 3, "hotelName": "Old Town Heritage Inn", "checkInDate": "2026-08-22T14:00:00.000Z", "checkOutDate": "2026-08-29T12:00:00.000Z", "additionalReq": "Large room" },
+      { "fullName": "Natasha Romanoff", "email": "widow@example.com", "hotelId": 3, "hotelName": "Old Town Heritage Inn", "checkInDate": "2026-09-05T14:00:00.000Z", "checkOutDate": "2026-09-08T12:00:00.000Z", "additionalReq": "Silent room" },
+      { "fullName": "Arthur Curry", "email": "aquaman@example.com", "hotelId": 4, "hotelName": "EcoGreen Rainforest Lodge", "checkInDate": "2026-07-02T14:00:00.000Z", "checkOutDate": "2026-07-09T12:00:00.000Z", "additionalReq": "Vegetarian menu" },
+      { "fullName": "Hal Jordan", "email": "lantern@example.com", "hotelId": 4, "hotelName": "EcoGreen Rainforest Lodge", "checkInDate": "2026-07-12T14:00:00.000Z", "checkOutDate": "2026-07-16T12:00:00.000Z", "additionalReq": "No guide needed" },
+      { "fullName": "Selina Kyle", "email": "catwoman@example.com", "hotelId": 4, "hotelName": "EcoGreen Rainforest Lodge", "checkInDate": "2026-07-20T14:00:00.000Z", "checkOutDate": "2026-07-30T12:00:00.000Z", "additionalReq": "Transfer" },
+      { "fullName": "Harvey Dent", "email": "twoface@example.com", "hotelId": 4, "hotelName": "EcoGreen Rainforest Lodge", "checkInDate": "2026-08-05T14:00:00.000Z", "checkOutDate": "2026-08-12T12:00:00.000Z", "additionalReq": "" },
+      { "fullName": "Jim Gordon", "email": "gordon@example.com", "hotelId": 4, "hotelName": "EcoGreen Rainforest Lodge", "checkInDate": "2026-08-15T14:00:00.000Z", "checkOutDate": "2026-08-20T12:00:00.000Z", "additionalReq": "Near main building" },
+      { "fullName": "Luke Skywalker", "email": "luke@example.com", "hotelId": 4, "hotelName": "EcoGreen Rainforest Lodge", "checkInDate": "2026-08-25T14:00:00.000Z", "checkOutDate": "2026-09-02T12:00:00.000Z", "additionalReq": "Guided tour" },
+      { "fullName": "Emily Watson", "email": "emily.w@example.com", "hotelId": 4, "hotelName":"Apex City Centre","checkInDate":"2026-07-05T14:00:00.000Z","checkOutDate":"2026-07-12T11:00:00.000Z","additionalReq":"Quiet room, away from the elevator"},
+      { "fullName": "Emily Watson", "email": "emily.w@example.com", "hotelId": 0, "hotelName":"Radisson Blu Resort","checkInDate":"2026-09-15T15:00:00.000Z","checkOutDate":"2026-09-22T12:00:00.000Z","additionalReq":"Ocean view, late check-in"},
+      { "fullName": "David Miller", "email": "miller.d@example.com", "hotelId": 1, "hotelName":"The Ritz-Carlton","checkInDate":"2026-08-10T14:00:00.000Z","checkOutDate":"2026-08-14T12:00:00.000Z","additionalReq":"Access to the executive lounge"},
+      { "fullName": "David Miller", "email": "miller.d@example.com", "hotelId": 3, "hotelName":"Urban Boutique Hotel","checkInDate":"2026-10-01T14:00:00.000Z","checkOutDate":"2026-10-05T11:00:00.000Z","additionalReq":"Extra towels, feather-free pillows"},
+      { "fullName": "John Doe", "email": "johndoe@example.com", "hotelId": 2, "hotelName":"Grand Plaza Hotel","checkInDate":"2026-07-10T14:00:00.000Z","checkOutDate":"2026-07-15T12:00:00.000Z","additionalReq":"High floor, king size bed"},
+      { "fullName": "John Doe", "email": "johndoe@example.com", "hotelId": 5, "hotelName":"Sea Breeze Resort","checkInDate":"2026-08-01T15:00:00.000Z","checkOutDate":"2026-08-10T11:00:00.000Z","additionalReq":"All-inclusive, transfer from airport needed"},
+      { "fullName": "John Doe", "email": "johndoe@example.com", "hotelId": 1, "hotelName":"Mountain View Lodge","checkInDate":"2026-12-24T14:00:00.000Z","checkOutDate":"2026-12-28T12:00:00.000Z","additionalReq":"Room with a fireplace"},
+      { "fullName": "Goran Milovich", "email": "ivan@example.com", "hotelId": 0, "hotelName": "Grand Horizon Resort", "checkInDate": "2022-03-15T14:00:00.000Z", "checkOutDate": "2022-03-22T12:00:00.000Z", "additionalReq": "" },
+      { "fullName": "John Smith", "email": "john@example.com", "hotelId": 1, "hotelName": "Urban Elite Suites", "checkInDate": "2023-05-10T14:00:00.000Z", "checkOutDate": "2023-05-15T12:00:00.000Z", "additionalReq": "Quiet room" },
+      { "fullName": "Anna Klaus", "email": "anna@example.com", "hotelId": 2, "hotelName": "Alpine Nest Chalet", "checkInDate": "2024-12-20T14:00:00.000Z", "checkOutDate": "2024-12-28T12:00:00.000Z", "additionalReq": "Ski storage" },
+      { "fullName": "Alex Mercer", "email": "mercer@example.com", "hotelId": 3, "hotelName": "Old Town Heritage Inn", "checkInDate": "2025-02-01T14:00:00.000Z", "checkOutDate": "2025-02-10T12:00:00.000Z", "additionalReq": "" },
+      { "fullName": "Elena Rostova", "email": "elena@example.com", "hotelId": 4, "hotelName": "EcoGreen Rainforest Lodge", "checkInDate": "2025-09-14T14:00:00.000Z", "checkOutDate": "2025-09-20T12:00:00.000Z", "additionalReq": "Transfer" },
+      { "fullName": "Stasich Nana", "email": "active1@example.com", "hotelId": 0, "hotelName": "Grand Horizon Resort", "checkInDate": "2026-06-20T14:00:00.000Z", "checkOutDate": "2026-06-30T12:00:00.000Z", "additionalReq": "Inside current date range" },
+      { "fullName": "Kenguru S. Men", "email": "active2@example.com", "hotelId": 1, "hotelName": "Urban Elite Suites", "checkInDate": "2026-06-23T14:00:00.000Z", "checkOutDate": "2026-06-25T12:00:00.000Z", "additionalReq": "Inside current date range" },
+      { "fullName": "Practice Name", "email": "active3@example.com", "hotelId": 2, "hotelName": "Alpine Nest Chalet", "checkInDate": "2026-06-24T00:00:00.000Z", "checkOutDate": "2026-07-05T12:00:00.000Z", "additionalReq": "Inside current date range" }
+    ]); 
