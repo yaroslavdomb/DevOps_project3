@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata: 
+  name: jenkins-master
+  namespace: jenkins
+spec:
+  serviceName: jenkins-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins-master
+  template:
+    metadata:
+      labels:
+        app: jenkins-master
+    spec:
+      serviceAccountName: jenkins-service-acc
+      containers:
+        - name: jenkins-master
+          image: jenkins/jenkins:lts-jdk21
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 50000
+              name: inbound
+          env:
+            - name: CASC_JENKINS_CONFIG
+              value: /var/jenkins_config/jenkins.yaml
+            - name: JENKINS_ADMIN_ID
+              valueFrom:
+                secretKeyRef:
+                  name: jenkins-secret
+                  key: JENKINS_ADMIN_ID
+            - name: JENKINS_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: jenkins-secret
+                  key: JENKINS_ADMIN_PASSWORD
+          volumeMounts:
+            - name: jenkins-home
+              mountPath: /var/jenkins_home
+            - name: config-volume
+              mountPath: /var/jenkins_config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: jenkins-casc-config    
+  volumeClaimTemplates:
+    - metadata:
+        name: jenkins-home
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 10Gi
