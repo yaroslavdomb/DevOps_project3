@@ -1,4 +1,3 @@
-application-auth-secret.yaml
 *.crt
 *.key
-nexus-pull-secret.yaml
+*secret.yaml
