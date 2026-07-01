@@ -1,0 +1,36 @@
+pipeline {
+    agent {
+        kubernetes {
+            cloud 'kubernetes-cloud'
+            yaml '''
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: kaniko
+    image: gcr.io/kaniko-project/executor:debug
+    command: ['cat']
+    tty: true
+    volumeMounts:
+    - name: registry-creds
+      mountPath: /kaniko/.docker
+  volumes:
+  - name: registry-creds
+    secret:
+      secretName: nexus-pull-secret
+      items:
+      - key: .dockerconfigjson
+        path: config.json
+'''
+        }
+    }
+    stages {
+        stage('Build and Push Frontend') {
+            steps {
+                container('kaniko') {
+                    sh '/kaniko/executor --context=dir://./frontend-repo --dockerfile=./frontend-repo/Dockerfile --destination=nexus.local/fe-img:${BUILD_NUMBER} --destination=nexus.local/fe-img:latest'
+                }
+            }
+        }
+    }
+}
