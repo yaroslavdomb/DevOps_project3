@@ -17,7 +17,7 @@ spec:
   volumes:
   - name: registry-creds
     secret:
-      secretName: nexus-pull-secret
+      secretName: kaniko-nexus-secret
       items:
       - key: .dockerconfigjson
         path: config.json
