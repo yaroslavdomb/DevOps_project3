@@ -28,7 +28,7 @@ spec:
         stage('Build and Push Frontend') {
             steps {
                 container('kaniko') {
-                    sh '/kaniko/executor --context=dir://./frontend-repo --dockerfile=./frontend-repo/Dockerfile --destination=nexus-service.nexus.svc.cluster.local:8081/fe-img:${BUILD_NUMBER} --destination=nexus-service.nexus.svc.cluster.local:8081/fe-img:latest'
+                    sh '/kaniko/executor --context=dir://./frontend-repo --dockerfile=./frontend-repo/Dockerfile --destination=nexus-service.nexus.svc.cluster.local:8081/fe-img:${BUILD_NUMBER} --destination=nexus-service.nexus.svc.cluster.local:8081/fe-img:latest --insecure'
                 }
             }
         }
