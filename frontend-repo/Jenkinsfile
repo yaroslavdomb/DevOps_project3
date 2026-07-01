@@ -6,6 +6,10 @@ pipeline {
 apiVersion: v1
 kind: Pod
 spec:
+  hostAliases:
+  - ip: "10.96.137.183"
+    hostnames:
+    - "nexus.local"
   containers:
   - name: kaniko
     image: gcr.io/kaniko-project/executor:debug
@@ -28,7 +32,7 @@ spec:
         stage('Build and Push Frontend') {
             steps {
                 container('kaniko') {
-                    sh '/kaniko/executor --context=dir://./frontend-repo --dockerfile=./frontend-repo/Dockerfile --destination=nexus-service.nexus.svc.cluster.local:8081/fe-img:${BUILD_NUMBER} --destination=nexus-service.nexus.svc.cluster.local:8081/fe-img:latest --insecure'
+                    sh '/kaniko/executor --context=dir://./frontend-repo --dockerfile=./frontend-repo/Dockerfile --destination=nexus.local/fe-img:${BUILD_NUMBER} --destination=nexus.local/fe-img:latest --insecure'
                 }
             }
         }
