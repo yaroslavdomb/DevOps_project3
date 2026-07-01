@@ -17,7 +17,7 @@ spec:
   volumes:
   - name: registry-creds
     secret:
-      secretName: nexus-pull-secret
+      secretName: kaniko-nexus-secret
       items:
       - key: .dockerconfigjson
         path: config.json
@@ -28,7 +28,7 @@ spec:
         stage('Build and Push Backend') {
             steps {
                 container('kaniko') {
-                    sh '/kaniko/executor --context=dir://./frontend-repo --dockerfile=./frontend-repo/Dockerfile --destination=nexus.local/be-img:${BUILD_NUMBER} --destination=nexus.local/be-img:latest'
+                    sh '/kaniko/executor --context=dir://./backend-repo --dockerfile=./backend-repo/Dockerfile --destination=nexus-service.nexus.svc.cluster.local:8081/be-img:${BUILD_NUMBER} --destination=nexus-service.nexus.svc.cluster.local:8081/be-img:latest --insecure'
                 }
             }
         }
