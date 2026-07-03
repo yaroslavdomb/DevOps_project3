@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Hotels</title>
+        <link rel="stylesheet" href="../CSS/index.css" />
+        <script src="../JS/index.js" type="module" defer></script>
+    </head>
+    <body>
+        <header>
+            <a href="search.html">Check reservations</a>
+        </header>
+
+        <main>
+            <h1 class="txt-center">Look at me and reserve!</h1>
+
+            <div class="search-hotel-container">
+                <label for="search-hotel">I would like to reserve at: </label>
+                <select id="search-hotel">
+                    <option value="" disabled selected hidden>Select a hotel...</option>
+                </select>
+                <button id="hotel-selected-btn">Select hotel</button>
+            </div>
+
+            <div class="hotel-container is-hidden">
+                <img src="../resources/hotel-1.jpg" alt="Hotel you would like to reserve" class="hotel-photo" />
+
+                <fieldset class="full-description-section border">
+                    <legend>Hotel description</legend>
+                    <span> Our hotel is the best!!!</span>
+                    <details>
+                        <summary aria-expanded="false">See more...</summary>
+                        <p>hotel textual description</p>
+                    </details>
+                </fieldset>
+            </div>
+
+            <form class="reservation-form is-hidden">
+                <fieldset>
+                    <legend>Reservation</legend>
+                    <div>
+                        <label for="guest-name">Name:</label>
+                        <input
+                            type="text"
+                            id="guest-name"
+                            placeholder="input your full name"
+                            pattern="[\p{L}\s]+"
+                            aria-describedby="name-hint"
+                        />
+                        <span id="name-hint" style="display: none">Only letters and space allowed</span>
+                    </div>
+                    <div>
+                        <label for="guest-email">Email:</label>
+                        <input type="email" id="guest-email" aria-describedby="email-hint" />
+                    </div>
+                    <div>
+                        <label for="check-in-date">check-In</label>
+                        <input type="datetime-local" id="check-in-date" />
+                    </div>
+                    <div>
+                        <label for="check-out-date">check-Out</label>
+                        <input type="datetime-local" id="check-out-date" />
+                    </div>
+                    <div>
+                        <label for="additional-request">Additional request</label>
+                        <input type="textarea" id="additional-request" />
+                    </div>
+                    <div>
+                        <label>Total order sum: </label>
+                        <output id="total-sum">0.0</output>
+                    </div>
+                    <div>
+                        <button type="submit" id="reserve-hotel-btn">Reserve</button>
+                    </div>
+                </fieldset>
+            </form>
+        </main>
+    </body>
+</html>

@@ -1,0 +1,77 @@
+services:
+    db:
+        build: ../../db-repo
+        ports:
+            - "${DB_PORT}:${DB_PORT}"
+        environment:
+            - DB_HOST=db
+            - DB_PORT=${DB_PORT}
+            - DB_NAME=${DB_NAME}
+            - REPLICA=${REPLICA}
+            - READER_NAME=${READER_NAME}
+            - READER_PASS=${READER_PASS}
+            - WRITER_NAME=${WRITER_NAME}
+            - WRITER_PASS=${WRITER_PASS}
+        networks:
+            - fp-net
+        volumes:
+            - mongo-data:/data/db
+        healthcheck:
+            test: ["CMD-SHELL", 'mongosh --port ${DB_PORT} --eval ''db.runCommand("ping").ok'' --quiet']
+            interval: 4s
+            timeout: 3s
+            retries: 3
+            start_period: 10s
+
+    db-ui:
+        image: mongo-express:latest
+        ports:
+            - "${ME_PORT}:${ME_PORT}"
+        environment:
+            - ME_CONFIG_MONGODB_SERVER=db
+            - ME_CONFIG_MONGODB_PORT=${DB_PORT}
+            - ME_CONFIG_MONGODB_ENABLE_ADMIN=false
+            - ME_CONFIG_MONGODB_AUTH_DATABASE=${DB_NAME}
+            - ME_CONFIG_MONGODB_AUTH_USERNAME=${WRITER_NAME}
+            - ME_CONFIG_MONGODB_AUTH_PASSWORD=${WRITER_PASS}
+            - ME_CONFIG_BASICAUTH_USERNAME=${ME_AUTH_UNAME}
+            - ME_CONFIG_BASICAUTH_PASSWORD=${ME_AUTH_UPASS}
+        networks:
+            - fp-net
+        depends_on:
+            db:
+                condition: service_healthy
+
+    backend:
+        build: ../../backend-repo
+        ports:
+            - "${BE_PORT}:${BE_PORT}"
+        environment:
+            - DB_HOST=db
+            - DB_PORT=${DB_PORT}
+            - DB_NAME=${DB_NAME}
+            - REPLICA=${REPLICA}
+            - READER_NAME=${READER_NAME}
+            - READER_PASS=${READER_PASS}
+            - WRITER_NAME=${WRITER_NAME}
+            - WRITER_PASS=${WRITER_PASS}
+            - PORT=${BE_PORT}
+        networks:
+            - fp-net
+        depends_on:
+            db:
+                condition: service_healthy
+
+    frontend:
+        build: ../../frontend-repo
+        ports:
+            - "8080:80"
+        networks:
+            - fp-net
+
+networks:
+    fp-net:
+        driver: bridge
+
+volumes:
+    mongo-data:

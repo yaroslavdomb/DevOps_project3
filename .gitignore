@@ -1,0 +1,4 @@
+*.crt
+*.key
+*secret.yaml
+RM-global.txt

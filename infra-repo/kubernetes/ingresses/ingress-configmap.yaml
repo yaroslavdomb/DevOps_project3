@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nexus-custom-headers
+  namespace: nexus
+data:
+  X-Forwarded-Proto: "http"

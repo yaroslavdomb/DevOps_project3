@@ -1,0 +1,157 @@
+header {
+    background: linear-gradient(90deg, #1e3c72 0%, #9a4ef1 100%);
+    padding: 15px 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+header nav {
+  display: flex;
+  gap: 20px;
+}
+
+header a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.3s ease;
+  border: 2px solid yellow;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+header a:hover {
+  opacity: 0.8;
+}
+
+body {
+    background-color: lightblue;
+    margin: 0;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.txt-center {
+    text-align: center;
+}
+
+form fieldset {
+    border: 2px solid red;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 0 auto;
+    max-width: 400px;
+    box-sizing: border-box;
+}
+
+form fieldset legend {
+    padding: 0 5px;
+    font-weight: bold;
+}
+
+fieldset > span {
+    display: block;
+    text-align: center;
+    margin: 15px 0;
+    font-weight: bold;
+}
+
+form div {
+    margin-bottom: 25px; 
+}
+
+form div:has(button[type="submit"]) {
+    margin-bottom: 0;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.is-hidden {
+    display: none !important;
+}
+
+@media (min-width: 486px) {
+    form div:not(:has(button)) {
+        display: grid;
+        grid-template-columns: 100px 1fr;
+        gap: 25px; 
+        align-items: center;
+    }
+    
+    form div span {
+        grid-column: 2;
+        font-size: 0.85em;
+    }
+}
+
+@media (max-width: 485px) {
+    form div:not(:has(button)) {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    form div input {
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 5px;
+    }
+    
+    form div span {
+        font-size: 0.85em;
+        margin-top: 5px;
+    }
+}
+
+.reservations-table {
+    width: 60%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    margin-bottom: 30px;
+}
+
+.reservations-table th, 
+.reservations-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.reservations-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+.reservations-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.reservations-table th:nth-child(1),
+.reservations-table td:nth-child(1) {
+    width: 15%;
+}
+
+.reservations-table th:nth-child(2),
+.reservations-table td:nth-child(2) {
+    width: 15%;
+}
+
+.reservations-table th:nth-child(3),
+.reservations-table td:nth-child(3) {
+    width: 15%;
+}
+
+.reservations-table th:nth-child(4),
+.reservations-table td:nth-child(4) {
+    width: 15%;
+}
+
+.reservations-table th:nth-child(5),
+.reservations-table td:nth-child(5) {
+    width: 15%;
+}
+
+h3 {
+    background-color: #fff2cc;
+    padding: 12px 16px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}

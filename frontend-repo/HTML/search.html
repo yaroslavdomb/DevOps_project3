@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Hotels</title>
+        <link rel="stylesheet" href="../CSS/search.css" />
+        <script type="module" src="../JS/search.js"></script>
+    </head>
+    <body>
+        <header>
+            <a href = "index.html">Hotel selection</a>
+        </header>
+        
+        <main>
+            <h1 class="txt-center">Check your reservations</h1>
+                <form>
+                    <fieldset>
+                        <legend>Search by ... </legend>
+                        <div>
+                            <label for="guest-name">Name:</label>
+                            <input
+                                type="text"
+                                id="guest-name"
+                                placeholder="input your full name"
+                                pattern="[\p{L}\s]+"
+                                aria-describedby="name-hint"
+                            />
+                            <span id="name-hint" style="display: none">Only letters and space allowed</span>
+                        </div>
+                        <span>
+                            OR
+                        </span>
+                        <div>
+                            <label for="guest-email">Email:</label>
+                            <input type="email" id="guest-email" aria-describedby="email-hint" />
+                        </div>
+                        <div>
+                            <button type="submit" id="check-reservation-btn">Search</button>
+                        </div>
+                    </fieldset>
+                </form>
+
+                <div>
+                    <div id="active-reservations" class="is-hidden">
+                        <h3>
+                            Active:
+                        </h3>
+
+                    </div>
+                    <div id="completed-reservations" class="is-hidden">
+                        <h3>
+                            Completed:
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>
