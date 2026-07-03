@@ -22,7 +22,7 @@ router.get("/:id", validators.validateSearchHotel, async (req, res) => {
         const hotelData = await hotelRModel.findOne({ hotelId });
         if (!hotelData) {
             console.error(`Hotel with id=${req.params.id} not found!`);
-            return res.status(404).json({ error: "Hotel not found" });
+            return res.status(404).json({ error: "Hotel not found!!!" });
         }
         res.json(hotelData);
     } catch (err) {
