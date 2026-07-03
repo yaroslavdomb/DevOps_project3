@@ -30,6 +30,9 @@ spec:
     }
     stages {
         stage('Build and Push Backend') {
+            when {
+                changeset "backend-repo/**"
+            }
             steps {
                 container('kaniko') {
                     sh '/kaniko/executor --context=dir://./backend-repo --dockerfile=./backend-repo/Dockerfile --destination=nexus.local/be-img:${BUILD_NUMBER} --destination=nexus.local/be-img:latest --insecure'
