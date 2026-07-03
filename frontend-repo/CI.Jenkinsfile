@@ -29,10 +29,10 @@ spec:
         }
     }
     stages {
-        when {
-            changeset "frontend-repo/**"
-        }
         stage('Build and Push Frontend') {
+            when {
+                changeset "frontend-repo/**"
+            }
             steps {
                 container('kaniko') {
                     sh '/kaniko/executor --context=dir://./frontend-repo --dockerfile=./frontend-repo/Dockerfile --destination=nexus.local/fe-img:${BUILD_NUMBER} --destination=nexus.local/fe-img:latest --insecure'
