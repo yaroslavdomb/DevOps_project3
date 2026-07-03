@@ -32,3 +32,6 @@ router.get("/:id", validators.validateSearchHotel, async (req, res) => {
 });
 
 export default router;
+
+
+
