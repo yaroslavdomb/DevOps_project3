@@ -37,7 +37,7 @@ spec:
             }
             post {
                 success {
-                    build job: 'cd-backend', parameters: [string(name: 'TAG', value: env.BUILD_NUMBER)], wait: false
+                    build job: 'CD-backend', parameters: [string(name: 'TAG', value: env.BUILD_NUMBER)], wait: false
                 }
             }
         }
