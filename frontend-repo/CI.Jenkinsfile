@@ -29,6 +29,9 @@ spec:
         }
     }
     stages {
+        when {
+            changeset "frontend-repo/**"
+        }
         stage('Build and Push Frontend') {
             steps {
                 container('kaniko') {
