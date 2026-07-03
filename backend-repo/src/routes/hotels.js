@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
         res.json(hotels);
     } catch (err) {
         console.error(`Search for all hotels data return error: ${err}`);
-        res.status(500).json({ error: "Search for all hotels data failed" });
+        res.status(500).json({ error: "Search for all hotels data failed!!!" });
     }
 });
 
