@@ -18,5 +18,6 @@ spec:
       containers:
         - name: frontend
           image: nexus.local/fe-img:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
