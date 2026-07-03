@@ -29,11 +29,16 @@ spec:
         }
     }
     stages {
-        stage('Build and Push Backend') {
+        stage('Build and Push Backend!!!') {
             when {
                 changeset "backend-repo/**"
             }
             steps {
+                withCredentials([string(credentialsId: 'backend-env-secrets', variable: 'env_text')]) {
+                    script {
+                        writeFile file: 'backend-repo/.env', text: env_text
+                    }
+                }
                 container('kaniko') {
                     sh '/kaniko/executor --context=dir://./backend-repo --dockerfile=./backend-repo/Dockerfile --destination=nexus.local/be-img:${BUILD_NUMBER} --destination=nexus.local/be-img:latest --insecure'
                 }

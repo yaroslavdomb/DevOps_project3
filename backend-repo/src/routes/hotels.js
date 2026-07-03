@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
         res.json(hotels);
     } catch (err) {
         console.error(`Search for all hotels data return error: ${err}`);
-        res.status(500).json({ error: "Search for all hotels data failed" });
+        res.status(500).json({ error: "Search for all hotels data failed!!!" });
     }
 });
 
@@ -21,8 +21,8 @@ router.get("/:id", validators.validateSearchHotel, async (req, res) => {
         const { id: hotelId } = req.params;
         const hotelData = await hotelRModel.findOne({ hotelId });
         if (!hotelData) {
-            console.error(`Hotel with id=${req.params.id} not found!`);
-            return res.status(404).json({ error: "Hotel not found" });
+            console.error(`Hotel with id=${req.params.id} not found!!!!`);
+            return res.status(404).json({ error: "Hotel not found!!!" });
         }
         res.json(hotelData);
     } catch (err) {
@@ -32,3 +32,6 @@ router.get("/:id", validators.validateSearchHotel, async (req, res) => {
 });
 
 export default router;
+
+
+
