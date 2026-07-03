@@ -35,6 +35,11 @@ spec:
                     sh '/kaniko/executor --context=dir://./backend-repo --dockerfile=./backend-repo/Dockerfile --destination=nexus.local/be-img:${BUILD_NUMBER} --destination=nexus.local/be-img:latest --insecure'
                 }
             }
+            post {
+                success {
+                    build job: 'cd-backend', parameters: [string(name: 'TAG', value: env.BUILD_NUMBER)], wait: false
+                }
+            }
         }
     }
 }
