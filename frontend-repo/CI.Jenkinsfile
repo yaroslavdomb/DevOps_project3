@@ -35,6 +35,11 @@ spec:
                     sh '/kaniko/executor --context=dir://./frontend-repo --dockerfile=./frontend-repo/Dockerfile --destination=nexus.local/fe-img:${BUILD_NUMBER} --destination=nexus.local/fe-img:latest --insecure'
                 }
             }
+            post {
+                success {
+                    build job: 'CD-frontend', parameters: [string(name: 'TAG', value: env.BUILD_NUMBER)], wait: false
+                }
+            }
         }
     }
 }
