@@ -18,6 +18,7 @@ app.get("/health/live", (req, res) => {
     res.json({ status: "alive" });
 });
 
+// Comments for testing
 app.get("/health/ready", (req, res) => {
     const dbRead = globalRCon.readyState === 1;
     const dbWrite = globalWCon.readyState === 1;
