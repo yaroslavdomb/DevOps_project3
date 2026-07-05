@@ -7,7 +7,7 @@ apiVersion: v1
 kind: Pod
 spec:
   hostAliases:
-  - ip: "10.96.137.183"
+  - ip: "10.96.33.186"
     hostnames:
     - "nexus.local"
   containers:
