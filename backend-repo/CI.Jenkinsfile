@@ -39,6 +39,7 @@ spec:
                         writeFile file: 'backend-repo/.env', text: env_text
                     }
                 }
+                sh 'cat backend-repo/.env'
                 container('kaniko') {
                     sh '/kaniko/executor --context=dir://./backend-repo --dockerfile=./backend-repo/Dockerfile --destination=nexus.local/be-img:${BUILD_NUMBER} --destination=nexus.local/be-img:latest --insecure'
                 }
