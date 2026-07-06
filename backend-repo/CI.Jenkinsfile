@@ -34,9 +34,9 @@ spec:
                 changeset "backend-repo/**"
             }
             steps {
-                withCredentials([string(credentialsId: 'backend-env-secrets', variable: 'env_text')]) {
+                withCredentials([string(credentialsId: 'backend-env-secrets', variable: 'env_b64')]) {
                     script {
-                        writeFile file: 'backend-repo/.env', text: env_text
+                        sh "echo ${env_b64} | base64 -d > backend-repo/.env"
                     }
                 }
                 sh 'cat backend-repo/.env'
