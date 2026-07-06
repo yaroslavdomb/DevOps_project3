@@ -7,6 +7,7 @@ const router = express.Router();
 // GET /api/v1/hotels
 router.get("/", async (req, res) => {
     try {
+        console.info("Test CI/CD - 20");
         const hotels = await hotelRModel.find({}, { _id: 0, hotelId: 1, name: 1 }).limit(50);
         res.json(hotels);
     } catch (err) {
