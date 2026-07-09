@@ -21,11 +21,8 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
-          env:
-            - name: DB_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: backend-configmap
-                  key: DB_PORT
-            - name: DB_HOST
-              value: "mongodb-service.database.svc.cluster.local"
+          envFrom:
+          - secretRef:
+              name: back-env-secret
+          - configMapRef:
+              name: backend-configmap

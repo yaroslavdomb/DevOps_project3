@@ -34,12 +34,6 @@ spec:
                 changeset "backend-repo/**"
             }
             steps {
-                withCredentials([string(credentialsId: 'backend-env-secrets', variable: 'env_b64')]) {
-                    script {
-                        sh "echo ${env_b64} | base64 -d > backend-repo/.env"
-                    }
-                }
-                sh 'cat backend-repo/.env'
                 container('kaniko') {
                     sh '/kaniko/executor --context=dir://./backend-repo --dockerfile=./backend-repo/Dockerfile --destination=nexus.local/be-img:${BUILD_NUMBER} --destination=nexus.local/be-img:latest --insecure'
                 }
