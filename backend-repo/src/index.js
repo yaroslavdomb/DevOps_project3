@@ -7,8 +7,6 @@ import { globalRCon, globalWCon, initDatabase } from "./models/db.js";
 import logger, { loggerStorage } from "./config/logger.js";
 import pinoHttp from "pino-http";
 
-dotenv.config();
-
 const app = express();
 
 // init logger BEFORE all others to get access to body of POST 
