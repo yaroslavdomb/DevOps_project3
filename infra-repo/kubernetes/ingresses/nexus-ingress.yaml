@@ -17,7 +17,7 @@ spec:
         - nexus.local
       secretName: nexus-tls
   rules:
-    - host: nexus.local
+    - host: hotels.app.nexus.local
       http:
         paths:
           - path: /
