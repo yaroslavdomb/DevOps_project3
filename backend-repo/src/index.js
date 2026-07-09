@@ -1,4 +1,4 @@
-import dotenv from "dotenv";
+import  "./config/env.js";
 import express from "express";
 import cors from "cors";
 import reservationsRouter from "./routes/reservations.js";

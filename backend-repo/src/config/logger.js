@@ -3,8 +3,8 @@ import { AsyncLocalStorage } from "node:async_hooks";
 
 export const loggerStorage = new AsyncLocalStorage();
 
-const isProduction = process.env.NODE_ENV === "prod";
-const logLevel = process.env.LOG_LEVEL;
+const isProduction = (process.env.NODE_ENV || "prod") === "prod";
+const logLevel = process.env.LOG_LEVEL || "info";
 const logMethods = new Set(["trace", "debug", "info", "warn", "error", "fatal", "child"]);
 
 const targets = [
