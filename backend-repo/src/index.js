@@ -1,4 +1,3 @@
-import  "./config/env.js";
 import express from "express";
 import cors from "cors";
 import reservationsRouter from "./routes/reservations.js";
@@ -49,6 +48,7 @@ app.get("/health/ready", (req, res) => {
 const PORT = process.env.PORT || 3000;
 async function startServer () {
   try {
+    logger.info("Before initDatabase - 2");
     await initDatabase();
 
     app.listen(PORT, () => {

@@ -19,9 +19,6 @@ spec:
         - name: backend
           image: nexus.local/be-img:22
           imagePullPolicy: Always
-          env:
-            - name: DOTENV_PROCESS_ENV
-              value: "true"
           ports:
             - containerPort: 3000
           envFrom:
