@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
         const hotels = await hotelRModel.find({}, { _id: 0, hotelId: 1, name: 1 }).limit(50);
         res.json(hotels);
     } catch (err) {
-        logger.error({ err }, "Search for all hotels data return error: ");
+        logger.error({ err }, "Search for all hotels data return error:... ");
         res.status(500).json({ error: "Search for all hotels data failed!" });
     }
 });
