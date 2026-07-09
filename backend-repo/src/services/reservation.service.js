@@ -1,5 +1,6 @@
-import {hotelWModel} from "../models/Hotel.js";
-import {reservationWModel} from "../models/Reservation.js";
+import logger from "../config/logger.js";
+import { hotelWModel } from "../models/Hotel.js";
+import { reservationWModel } from "../models/Reservation.js";
 import mongoose from "mongoose";
 
 export const createReservationService = async (data, session) => {
@@ -9,6 +10,7 @@ export const createReservationService = async (data, session) => {
     if (!hotel) {
         const error = new Error("Hotel not found");
         error.statusCode = 404;
+        logger.warn({ hotelId }, "Hotel was not found: ");
         throw error;
     }
 
@@ -28,6 +30,7 @@ export const createReservationService = async (data, session) => {
         const error = new Error("Sorry, we have sold out! Please try other dates.");
         error.statusCode = 409;
         error.errorCode = "ROOMS_SOLD_OUT";
+        logger.warn({ hotelName, checkIn, checkOut }, "No rooms for these dates left!");
         throw error;
     }
 
