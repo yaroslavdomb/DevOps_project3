@@ -4,5 +4,12 @@ metadata:
   name: backend-configmap
   namespace: backend
 data:
+  REPLICA: "rs0"
   BE_PORT: "3000"
+  DB_HOST: "mongodb-service.database.svc.cluster.local"
   DB_PORT: "27017"
+  DB_NAME: "finalProj"
+  READER_NAME: "readerUser"
+  WRITER_NAME: "writerUser"
+  NODE_ENV: "prod"
+  LOG_LEVEL: "info"
