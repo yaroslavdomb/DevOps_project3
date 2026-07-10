@@ -159,18 +159,11 @@ spec:
                 container('git-tools') {
                     withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                         sh '''
-                            curl -u ${NEXUS_USER}:${NEXUS_PASS} "http://${NEXUS_HOST}/service/rest/v1/search?repository=${NEXUS_REPO}&name=${IMAGE_NAME}" > raw_response.json
-                            cat raw_response.json
-                            echo "---"
-                            jq -r '[.items[] | select(.version != "latest")] | sort_by(.version | tonumber) | reverse | .[].version' raw_response.json
-                        '''
-                        sh '''
                             curl -s -u ${NEXUS_USER}:${NEXUS_PASS} "http://${NEXUS_HOST}/service/rest/v1/search?repository=${NEXUS_REPO}&name=${IMAGE_NAME}" \
                             | jq -r '[.items[] | select(.version != "latest")] | sort_by(.version | tonumber) | reverse | .[3:] | .[].id' \
                             > old_ids.txt
 
                             while read id; do
-                                echo "Deleting build with id $id"
                                 curl -s -u ${NEXUS_USER}:${NEXUS_PASS} -X DELETE "http://${NEXUS_HOST}/service/rest/v1/components/$id"
                             done < old_ids.txt
                         '''
