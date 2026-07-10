@@ -6,6 +6,10 @@ pipeline {
 apiVersion: v1
 kind: Pod
 spec:
+  hostAliases:
+  - ip: "10.96.33.186"
+    hostnames:
+    - "nexus.local"
   containers:
   - name: git-tools
     image: alpine/git:latest
