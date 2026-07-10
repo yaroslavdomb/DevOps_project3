@@ -48,7 +48,7 @@ app.get("/health/ready", (req, res) => {
 const PORT = process.env.PORT || 3000;
 async function startServer () {
   try {
-    logger.info("Before initDatabase - 2");
+    logger.info("Before initDatabase - 4");
     await initDatabase();
 
     app.listen(PORT, () => {
