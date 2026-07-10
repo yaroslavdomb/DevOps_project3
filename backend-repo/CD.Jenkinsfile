@@ -24,6 +24,8 @@ spec:
         REPO_NAME    = 'DevOps_project3'
         DEPLOY_FILE  = 'infra-repo/kubernetes/deployments/back-deployment.yaml'
         IMAGE_NAME   = 'be-img'
+        NEXUS_HOST   = 'nexus.local'
+        NEXUS_REPO   = 'nexus-repo'
     }
 
     stages {
@@ -142,6 +144,25 @@ spec:
                             git add ${DEPLOY_FILE}
                             git commit -m "CD: backend image tag -> ${TAG}" || echo "Nothing to commit"
                             git push https://${GIT_USER}:${GIT_PASS}@github.com/${REPO_OWNER}/${REPO_NAME}.git DEV
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Cleanup old images') {
+            steps {
+                container('git-tools') {
+                    withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                        sh '''
+                            curl -s -u ${NEXUS_USER}:${NEXUS_PASS} "http://${NEXUS_HOST}/service/rest/v1/search?repository=${NEXUS_REPO}&name=${IMAGE_NAME}" \
+                            | jq -r '[.items[] | select(.version != "latest")] | sort_by(.version | tonumber) | reverse | .[3:] | .[].id' \
+                            > old_ids.txt
+
+                            while read id; do
+                                echo "Deleting build with id $id"
+                                curl -s -u ${NEXUS_USER}:${NEXUS_PASS} -X DELETE "http://${NEXUS_HOST}/service/rest/v1/components/$id"
+                            done < old_ids.txt
                         '''
                     }
                 }
