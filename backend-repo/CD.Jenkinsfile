@@ -155,7 +155,7 @@ spec:
                 container('git-tools') {
                     withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                         sh '''
-                            curl -s -u ${NEXUS_USER}:${NEXUS_PASS} "http://${NEXUS_HOST}/service/rest/v1/search?repository=${NEXUS_REPO}&name=${IMAGE_NAME}" > raw_response.json
+                            curl -u ${NEXUS_USER}:${NEXUS_PASS} "http://${NEXUS_HOST}/service/rest/v1/search?repository=${NEXUS_REPO}&name=${IMAGE_NAME}" > raw_response.json
                             cat raw_response.json
                             echo "---"
                             jq -r '[.items[] | select(.version != "latest")] | sort_by(.version | tonumber) | reverse | .[].version' raw_response.json
