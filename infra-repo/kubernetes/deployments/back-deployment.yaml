@@ -17,7 +17,7 @@ spec:
         - name: nexus-pull-secret
       containers:
         - name: backend
-          image: nexus.local/be-img:40
+          image: nexus.local/be-img:42
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
