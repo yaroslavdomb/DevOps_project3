@@ -39,3 +39,13 @@ spec:
                 secretKeyRef:
                   name: application-auth
                   key: ROOT_PASS
+            - name: ME_CONFIG_BASICAUTH_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: application-auth
+                  key: ME_AUTH_UNAME
+            - name: ME_CONFIG_BASICAUTH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: application-auth
+                  key: ME_AUTH_UPASS

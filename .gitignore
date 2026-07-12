@@ -4,4 +4,4 @@
 RM-global.txt
 *secrets_backUp
 *env*
-!env.js
+node_modules/
