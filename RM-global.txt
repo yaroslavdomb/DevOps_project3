@@ -1,0 +1,580 @@
+--------------- SHORT DESCRIPTION ---------------
+DevOps project checking the full integration path of application and automation.
+Include the following technologies:
+  K8s
+  Jenkins
+  Docker
+  ArgoCD
+  ELK-stack
+
+Link: 
+    https://github.com/YakirBar/devops-project#-final-project--kubernetes--jenkins--argocd--elk
+
+--------------- PREREQUISITIES ---------------
+  Memory  = 32+ Gb
+  CPU     = 4+ Cores
+  Disk    = 20+ Gb
+  Access to etc/hosts (Win)
+
+--------------- FOLDER STRUCTURE ---------------
+
+	frontend-repo/
+	├── src/
+	├── Dockerfile
+	└── README.md
+
+	backend-repo/
+	├── src/
+	├── Dockerfile
+	└── README.md
+
+	db-repo/
+	├── Dockerfile
+	├── mongo-init/
+	│	  ├── init.js
+	│	  ├── data-hotels.txt
+	│	  └── data-reservations.txt
+	└── README.md
+	
+	infra-repo/
+	├── kubernetes/
+  │   ├── configs/
+  │   ├── deployments/
+	│   ├── ingresses/
+	│   ├── jobs/
+	│   ├── namespaces/
+  │   ├── roles/
+	│   ├── secrets/
+	│   ├── services/
+	│   └── volumes/
+  │
+  ├── docker-compose/  
+  │
+	├── argocd/
+	│   ├── frontend-app.yaml
+	│   └── backend-app.yaml
+	│
+	└── README.md
+
+
+--------------- NAMING CONVENTION ---------------
+  
+  File structure above is aligned with adviced folder structure. Based on the following convention in the future this project could be easely transformed into more convineal type of file groupping - by applications involved into it.
+  
+  There are some allowed prefixes that each file related to the spcific section shoul follow:
+    front-          = frontend section
+    back-           = backend section
+    db-             = database section
+    jenkins-        = Jenkins section
+    log-            = ELK section
+      log-es-       = ElasticSearch
+      log-fluent-   = FluentBit
+      log-kibana-   = Kibana
+    nexus-          = Nexus section
+
+
+--------------- VERSIONS ---------------
+  BACKEND          
+    node:20-alpine
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.2",
+    "mongoose": "^9.7.2",
+    "pino-http": "^11.0.0",
+    "pino-pretty": "^13.1.3"
+  
+  FRONTEND
+    nginx:alpine
+    javaScript: ECMA-2026
+    HTML-3
+    CSS-5
+
+  DB
+    mongo:8
+    mongo-express:1.0.2
+
+  JENKINS
+    jenkins:lts-jdk21
+
+  INGRESS
+    1.15.1
+
+  ARGOCD
+
+
+  ELK
+    E = elasticsearch:8.19.18
+    L = fluent-bit:3.1.9
+    K = kibana:8.19.18
+
+  NGROK
+    3.39.8 
+  
+
+--------------- TESTING OUTSIDE OF K8s ---------------
+
+  1) STARTING EACH SECTION SEPARATLY 
+      cd /d F:\LERNING\__2025\DevOps\PROJECTS\p3_K8_JENKINS_ARGO_ELK\frontend-repo
+	
+      NET
+        docker network create fp-net
+        
+      FE
+        cd F:\LERNING\__2025\DevOps\PROJECTS\p3_K8_JENKINS_ARGO_ELK\frontend-repo
+        docker build -t fe-img .
+        docker run -d -p 8080:80 --name fp-fe --rm --network fp-net fe-img
+        
+      DB
+        cd F:\LERNING\__2025\DevOps\PROJECTS\p3_K8_JENKINS_ARGO_ELK\db-repo
+        docker build -t db-img .
+        docker run -d -p 27017:27017 --name fp-db --rm -e DB_PORT=27017 -e DB_HOST=fp-db --env-file .env.dev --network fp-net db-img
+        
+        docker logs fp-db
+        1) docker exec -it fp-db bash
+        2) for pid in /proc/[0-9]*/; do echo -n "PID: $(basename $pid) -> "; cat $pid/cmdline; echo ""; done
+        3) For (2) expected output 
+          PID: 1 -> mongod--replSetrs0--port27018--bind_ip_all
+          PID: 298 -> bash
+          
+      BE
+        cd F:\LERNING\__2025\DevOps\PROJECTS\p3_K8_JENKINS_ARGO_ELK\backend-repo
+        docker build -t be-img .
+        docker run -d -p 3000:3000 --name fp-be -e DB_PORT=27017 -e DB_HOST=fp-db --env-file .env.dev --network fp-net be-img
+        
+        docker logs fp-be
+        1) Expected output is "Application initialized. Listening port 3000"
+        
+        
+      TESTING:
+        Use Postman to get responses strignt from BE-DB-BE chain
+          GET  	  http://localhost:3000/health/live								      = check for DB node readyness
+          GET  	  http://localhost:3000/health/ready								    = check for DB readyness
+          GET  	  http://localhost:3000/api/v1/hotels								    = short info about all the hotels
+          GET  	  http://localhost:3000/api/v1/hotels/:id							  = full info about specific hotel
+          POST	  http://localhost:3000/api/v1/reservations						  = create new reservation 
+          GET  	  http://localhost:3000/api/v1/reservations?email=test@test.com	= search specific reservation
+          DELETE 	http://localhost:3000/api/v1/reservations/:id					= delete specific reservation
+
+      RESERVATION PAYLOAD
+        { 
+            "fullName": "Jarik Dd", 
+            "email": "jarik@example.com", 
+            "hotelId": 0, 
+            "hotelName": "Grand Horizon Resort", 
+            "checkIn": "2026-07-02T14:30:00.000Z", 
+            "checkOut": "2026-07-10T19:15:00.000Z", 
+            "additionalReq": "A really HUGE (!!!) bone for my small pitbully girl" 
+        }
+
+  
+  2) ALL-IN-ONE
+      "docker-compose" holds docker-compose file that allow to start FE + BE + DB + test data. 
+      INFRA
+		    cd F:\LERNING\__2025\DevOps\PROJECTS\p3_K8_JENKINS_ARGO_ELK\infra-repo\docker-compose
+		    docker compose up -d
+		
+--------------- JENKINS PLUGINS ---------------
+
+  Locale                  = to set Jenkins UI on English
+  Kubernetes              = to interact with K8s 
+  Generic Webhook Trigger = to accept webhook from GitHub
+  GitHub Integration      = 
+  Configuration as Code   = 
+
+
+--------------- CI/CD ---------------
+
+  Splitted onto 2 symmetric separate flows - FE and BE.
+
+  CI:
+    - triggered by push into DEV branch in GitHub
+    - should clone repo (only front/back-repo folder!)
+    - create a new images (tagged with counter number AND "latest") of an appropriate folder (front/back)
+    - put the new images into Nexus    
+    - trigger CD stage (and provide the just created number of version)
+
+  CD:
+    - create PR for main branch on GitHub
+    - approve merge PR to main from fake collaborator
+    - automerge PR to main
+    - update BE/FE with appropriate version in deployment.yaml in main
+    - update BE/FE with appropriate version in deployment.yaml in DEV    
+    - filter out all the versions older than 3 last && "latest"
+
+
+--------------- SCREENS ---------------
+
+APP 		  = http://hotels.app.local/index.html
+NEXUS 	  = http://localhost:8081/
+JENKINS	  = http://hotels.app.jenkins.local/
+MONGO_EX	= http://hotels.app.mongo.local/
+ARGO 	    = http://hotels.app.argo.local/
+KIBANA	  = http://hotels.app.kibana.local/
+NGROK     = http://127.0.0.1:4040/inspect/http
+
+
+--------------- LOCAL MACHINE MODIFICATION ---------------
+
+1) Add into C:\Windows\System32\drivers\etc\hosts:
+    127.0.0.1 nexus.local
+    127.0.0.1 hotels.app.local
+    127.0.0.1 hotels.app.jenkins.local
+    127.0.0.1 hotels.app.argo.local
+    127.0.0.1 hotels.app.nexus.local
+    127.0.0.1 hotels.app.kibana.local
+    127.0.0.1 hotels.app.mongo.local
+
+2) Add into DockerDesctop --> Settings --> Docker Engine --> "insecure-registries"
+    "nexus.local:80",
+    "127.0.0.1:8081",
+    "localhost:8081",
+
+--------------- CLUSTER CREATION ---------------
+
+cd /d F:\LERNING\__2025\DevOps\PROJECTS\p3_K8_JENKINS_ARGO_ELK\infra-repo\
+
+Namespaces:
+  kubectl apply -f kubernetes/namespaces/back-namespace.yaml
+  kubectl apply -f kubernetes/namespaces/db-namespace.yaml
+  kubectl apply -f kubernetes/namespaces/front-namespace.yaml
+  kubectl apply -f kubernetes/namespaces/nexus-namespace.yaml
+
+Secrets:
+  kubectl apply -f kubernetes/secrets/back-nexus-pull-secret.yaml
+  kubectl apply -f kubernetes/secrets/back-env-secret.yaml
+  kubectl apply -f kubernetes/secrets/front-nexus-pull-secret.yaml
+  kubectl apply -f kubernetes/secrets/db-nexus-pull-secret.yaml
+  kubectl apply -f kubernetes/secrets/db-auth-secret.yaml
+  
+Volumes:
+  kubectl apply -f kubernetes/volumes/nexus-storage.yaml
+
+Configs:
+  kubectl apply -f kubernetes/configs/back-configmap.yaml
+  kubectl apply -f kubernetes/configs/db-configmap.yaml
+  kubectl apply -f kubernetes/configs/db-test-data-configmap.yaml
+  
+Nexus:
+  kubectl apply -f kubernetes/deployments/nexus-deployment.yaml
+  kubectl apply -f kubernetes/services/nexus-service.yaml
+    kubectl get pods -n nexus
+  kubectl apply -f kubernetes/deployments/ingress-nginx-deployment.yaml
+    kubectl get pods -n ingress-nginx
+    kubectl logs ingress-nginx-controller-54754544b9-wcg29 -n ingress-nginx
+    // Add "data": {"proxy-set-headers": "nexus/nexus-custom-headers"}
+  kubectl edit configmap ingress-nginx-controller -n ingress-nginx
+  
+  // Change aliaces in FE/BE Jenkinsfiles by changing IP
+  kubectl get svc -n ingress-nginx ingress-nginx-controller        
+  kubectl apply -f kubernetes/ingresses/nexus-ingress-configmap.yaml
+  kubectl rollout restart deployment/ingress-nginx-controller -n ingress-nginx
+  // import again secret for CA
+  kubectl create secret tls nexus-tls --cert=kubernetes/secrets/nexus.local.crt --key=kubernetes/secrets/nexus.local.key -n nexus
+  kubectl apply -f kubernetes/ingresses/nexus-ingress.yaml
+    kubectl get ingress -n nexus
+    kubectl port-forward svc/nexus-service 8081:8081 -n nexus
+    kubectl exec -it statefulset/nexus -n nexus -- cat /nexus-data/admin.password 
+      first nexus pass == ***-***-***-*** -->
+      Open browser 
+      New password 	= ***
+      Nexus name 		= nexus-repo
+      Select settings -> Repository --> create repo -> docker(hosted) -> anonimous && V1 --> Create 
+      Select settings -> Security --> Realms --> move Docker Bearer Token to ACTIVE --> Save
+      System --> capabilities --> create --> Base URL --> set "http://nexus.local"
+
+Push data:
+  docker push nexus.local/mongo:8
+  docker push nexus.local/mongo-express:1.0.2
+  docker push nexus.local/be-img:latest
+  docker push nexus.local/fe-img:latest
+  
+Mongo:
+  kubectl apply -f kubernetes/deployments/db-mongodb-deployment.yaml
+  kubectl apply -f kubernetes/services/db-mongodb-service.yaml
+  
+Jobs:
+  kubectl apply -f kubernetes/jobs/db-j1-replica-init.yaml
+  kubectl apply -f kubernetes/jobs/db-j2-create-users.yaml
+    // make sure to start data populating after user creation
+    kubectl get pods -n database
+  kubectl apply -f kubernetes/jobs/db-j3-data-population.yaml
+  
+Mongo-Express:
+  kubectl apply -f kubernetes/deployments/db-mongo-express-deployment.yaml
+  kubectl apply -f kubernetes/services/db-mongo-express-service.yaml
+  kubectl apply -f kubernetes/ingresses/db-ingress.yaml
+  
+Backend:
+  kubectl apply -f kubernetes/services/back-service.yaml
+  kubectl apply -f kubernetes/deployments/back-deployment.yaml
+
+Frontend:
+  kubectl apply -f kubernetes/services/front-service.yaml
+  kubectl apply -f kubernetes/deployments/front-deployment.yaml
+
+Routing (Ingresses):
+  kubectl apply -f kubernetes/ingresses/back-ingress.yaml
+  kubectl apply -f kubernetes/ingresses/front-ingress.yaml
+
+Jenkins:
+  kubectl apply -f kubernetes/namespaces/jenkins-namespace.yaml
+  kubectl apply -f kubernetes/services/jenkins-service-acc.yaml
+  kubectl apply -f kubernetes/roles/jenkins-role.yaml
+  kubectl apply -f kubernetes/roles/jenkins-role-bind.yaml
+  kubectl apply -f kubernetes/secrets/jenkins-nexus-pull-secret.yaml
+  kubectl apply -f kubernetes/secrets/jenkins-secret.yaml
+  kubectl apply -f kubernetes/secrets/jenkins-kaniko-nexus-secret.yaml
+  kubectl apply -f kubernetes/configs/jenkins-casc-config.yaml
+  kubectl apply -f kubernetes/services/jenkins-service.yaml
+  kubectl apply -f kubernetes/services/jenkins-ui-service.yaml
+  kubectl apply -f kubernetes/deployments/jenkins-master-deployment.yaml
+  kubectl apply -f kubernetes/ingresses/jenkins-ingress.yaml
+
+  kubectl logs statefulset/jenkins-master -n jenkins   
+  // BROWSER at http://hotels.app.jenkins.local/ --> ***
+  // install suggested plugins
+  // create first admin - admin/***/admin/...
+  // JENKINS --> Managing --> Plugin --> Available --> search & install
+  //  Locale: Managing--> Appearence --> Ignore browser preferences
+  //	Kubernetes
+  //	Docker Pipeline (part of Kubernetes?)
+  //	GitHub Integration
+  //	Generic Webhook Trigger
+  //  Configuration as Code
+  // CLOUD in Jenkins:
+  //  Open UI --> Managing --> Clouds --> new --> "kubernetes-cloud" -->
+  //    Disable https certificate check = true
+  //    Kubernetes Namespace = jenkins
+  //    Jenkins URL = http://jenkins-service.jenkins.svc.cluster.local:8080
+  //    Save
+  //  Click on ... (right side of "kubernetes-cloud" line) --> Pod Template
+  //    "Add new" *2 (for FE and BE):
+  //    Fill the form with
+  //      Name 		  = jenkins-worker-fe
+  //      Namespace = jenkins
+  //      Labels 		= jenkins-worker-fe
+  //      Usage 		= Use this node as much as possible.			
+  //      Name of the container that will run the Jenkins agent = inbound			
+  //    Container
+  //      Name              = inbound
+  //      Docker Image      = jenkins/inbound-agent:latest
+  //      Working directory = /home/jenkins/agent
+  //    ImagePullSecrets = nexus-pull-secret
+  //    Service Account = jenkins-service-acc
+
+  Config PATs in Jenkins:
+    (for full instruction see secrets.txt)
+    - github-credentials (PAT allow access to main GIT)
+    - nexus-credentials (PAT allow access to Nexus)
+    - review-github (PAT allow access to PR review)
+    - backend-env-secrets (Secret, backend-env-secrets)
+    
+  Fix aliaces in CI.Jenkins
+    kubectl get svc -n ingress-nginx ingress-nginx-controller
+      --> Take IP (10.96.33.186) and copy into both CI.Jenkins files as line #10
+  
+  Config PATs in Nexus
+    for full instruction see secrets.txt
+    
+  Create flows in Jenkins:
+    Config Jenkins FE CI (CI-frontend):
+      01) Do not allow concurrent builds
+      02) Triggers --> Generic Webhook Trigger
+        Add 2 Post content parameters:
+          Variable 	= CHANGED_FILES
+          Expression 	= $.commits[*].modified[*]
+          JSONPath
+          
+          Variable	= REF
+          Expression 	= $.ref
+          JSONPath							
+        
+        Token = frontend-monorepo-token
+        Optional filter 
+          Expression 	= refs/heads/DEV.*frontend.*
+          Text 		= $REF $CHANGED_FILES
+      03) Definition = Pipline from SCM
+        04) SCM = Git
+        05) Repository URL = https://github.com/yaroslavdomb/DevOps_project3
+        06) Branch specifier = */DEV
+        07) Additional Behaviours --> Sparse Checkout paths
+          08) Path --> frontend-repo
+      12) Script Path = frontend-repo/CI.Jenkinsfile
+      13) Lightweight checkout = true
+
+    Config Jenkins FE CD (CD-frontend):
+      01) Do not allow concurrent builds
+      02) This project is parameterized (String Parameter)
+        03) Name = TAG
+        04) Description = Build number produced by build-frontend
+      03) Definition = Pipline from SCM
+        04) SCM = Git
+        05) Repository URL = https://github.com/yaroslavdomb/DevOps_project3
+        06) Branch specifier = */DEV
+        07) Additional Behaviours --> Sparse Checkout paths
+          08) Path --> infra-repo
+      09) Script Path = frontend-repo/CD.Jenkinsfile
+      
+    Config Jenkins BE CI (CI-backend)
+      01) Do not allow concurrent builds
+      02) Triggers --> Generic Webhook Trigger
+        Add 2 Post content parameters:
+          Variable 	= CHANGED_FILES
+          Expression 	= $.commits[*].modified[*]
+          JSONPath
+          
+          Variable	= REF
+          Expression 	= $.ref
+          JSONPath							
+        
+        Token = backend-monorepo-token
+        Optional filter 
+          Expression 	= refs/heads/DEV.*backend.*
+          Text 		= $REF $CHANGED_FILES
+      03) Definition = Pipline from SCM
+        04) SCM = Git
+        05) Repository URL = https://github.com/yaroslavdomb/DevOps_project3
+        06) Branch specifier = */DEV
+        07) Additional Behaviours --> Sparse Checkout paths
+          08) Path --> backend-repo
+      12) Script Path = backend-repo/CI.Jenkinsfile
+      13) Lightweight checkout = true
+
+    Config Jenkins BE CD (CD-backend):
+      01) Do not allow concurrent builds
+      02) This project is parameterized
+        03) Name = TAG
+        04) Description = Build number produced by build-backend
+      05) Definition = Pipline from SCM
+        06) SCM = Git
+        07) Repository URL = https://github.com/yaroslavdomb/DevOps_project3
+        08) Branch specifier = */DEV
+        09) Additional Behaviours --> Sparse Checkout paths
+          10) Path --> infra-repo
+      11) Script Path = backend-repo/CD.Jenkinsfile
+            
+  Ngrok (CMD)
+    cd /d f:\BOOT PROG\
+    ngrok http 80 --url=vantage-bulk-retying.ngrok-free.dev --host-header="hotels.app.jenkins.local"
+  
+  GitHub:
+    Open webhooks && create 2 webhooks:
+      Payload URL = https://vantage-bulk-retying.ngrok-free.dev/generic-webhook-trigger/invoke?token=backend-monorepo-token
+      Content type = application/json
+    
+      Payload URL = https://vantage-bulk-retying.ngrok-free.dev/generic-webhook-trigger/invoke?token=frontend-monorepo-token
+      Content type = application/json
+
+
+Secret in K8
+	// create secret (that will be used by ingress) and add it to K8
+	kubectl create secret tls nexus-tls --cert=nexus.local.crt --key=nexus.local.key -n nexus
+		kubectl get secrets -n nexus
+		kubectl get secret nexus-tls -n nexus -o yaml
+	
+	// In PowerShell as Admin = set this certificate as trusted for my OS
+	Import-Certificate -FilePath "C:\Users\<username>\nexus.local.crt" -CertStoreLocation Cert:\LocalMachine\Root
+	
+	// Create secret file with credentials to acces to Nexus
+	kubectl create secret docker-registry nexus-pull-secret --docker-server=nexus.local --docker-username=*** --docker-password=*** --namespace=application --dry-run=client -o yaml > kubernetes/secrets/nexus-pull-secret.yaml
+
+ArgoCD
+	
+	kubectl apply -n argocd -f argocd/argo-namespace.yaml
+	kubectl apply -n argocd -f argocd/argo-git-secret.yaml
+	kubectl apply -n argocd -f argocd/argo-install.yaml
+	kubectl apply -n argocd -f argocd/argo-ingress.yaml
+	kubectl get pods -n argocd
+	kubectl apply -n argocd -f argocd/backend-app.yaml
+	kubectl apply -n argocd -f argocd/frontend-app.yaml
+	kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+	// --> ***
+		// browser = https://hotels.app.argo.local/ --> admin/***
+
+			Stop argoCD:
+				kubectl scale deployment -n argocd --replicas=0 --all
+				kubectl scale statefulset -n argocd --replicas=0 --all
+				
+				kubectl scale deployment --all --replicas=0 -n argocd
+				kubectl scale statefulset argocd-application-controller --replicas=0 -n argocd
+
+			Start argoCD:
+				kubectl scale deployment argocd-server -n argocd --replicas=1
+				kubectl scale deployment argocd-repo-server -n argocd --replicas=1
+				kubectl scale deployment argocd-applicationset-controller -n argocd --replicas=1
+				kubectl scale deployment argocd-notifications-controller -n argocd --replicas=1
+				kubectl scale statefulset argocd-application-controller -n argocd --replicas=1
+				
+				
+				kubectl scale deployment --all --replicas=1 -n argocd
+ELK
+	Elastic (DB)
+		kubectl apply -f kubernetes/namespaces/log-namespace.yaml
+		kubectl apply -f kubernetes/volumes/log-es-storage.yaml
+		kubectl apply -f kubernetes/deployments/log-es-deployment.yaml
+		kubectl apply -f kubernetes/services/log-es-service.yaml		
+	
+	Fluent bit (log collector + parser)
+		kubectl apply -f kubernetes/roles/log-fluent-role.yaml
+		kubectl apply -f kubernetes/roles/log-fluent-role-bind.yaml
+		kubectl apply -f kubernetes/configs/log-fluent-configmap.yaml
+		kubectl apply -f kubernetes/deployments/log-fluent-daemonset.yaml
+		kubectl apply -f kubernetes/services/log-fluent-service-acc.yaml
+		
+	Kibana
+		kubectl apply -f kubernetes/deployments/log-kibana-deployment.yaml
+		kubectl apply -f kubernetes/services/log-kibana-service.yaml
+		kubectl apply -f kubernetes/ingresses/log-kibana-ingress.yaml
+		
+	STOP ELK
+		kubectl scale deployment/log-elasticsearch -n logging --replicas=0
+		kubectl scale deployment/log-kibana -n logging --replicas=0
+		kubectl delete daemonset log-fluentbit -n logging
+
+
+CHECK USER PER DB
+	kubectl exec -it mongodb-0 -n application -- mongosh --port 27017
+	show dbs
+	show collections
+	use admin
+	db.getUsers();
+	use finalProj
+	db.getUsers();
+	
+
+REPLICA ACTIONS
+	kubectl exec -it mongodb-0 -n application -- mongosh --port 27017
+	rs.stepDown();			//switch primary. Run on P only! Could be validate in mongo express via Hostname field
+	rs.status()				// check status of replica nodes
+	
+CHECK DIFF THINGS
+	kubectl get storageclass
+
+
+--------------- LOCAL DEMO ---------------
+
+  ARGO ON/OFF
+    kubectl scale deployment --all --replicas=0 -n argocd
+    kubectl scale statefulset --all --replicas=0 -n argocd
+
+    kubectl scale deployment --all --replicas=1 -n argocd
+    kubectl scale statefulset --all --replicas=1 -n argocd
+
+  ELK ON/OFF
+    kubectl scale deployment/log-elasticsearch -n logging --replicas=0
+    kubectl scale deployment/log-kibana -n logging --replicas=0
+    kubectl delete daemonset log-fluentbit -n logging
+    
+    kubectl scale deployment/log-elasticsearch -n logging --replicas=1
+    kubectl scale deployment/log-kibana -n logging --replicas=1
+    kubectl apply -f kubernetes/deployments/log-fluent-daemonset.yaml
+
+  APPLICATION DEV/FULL
+    kubectl scale deployment/frontend -n frontend --replicas=1
+    kubectl scale deployment/backend -n backend --replicas=1
+    kubectl scale statefulset/mongodb -n database --replicas=1
+    
+    kubectl scale deployment/frontend -n frontend --replicas=5
+    kubectl scale deployment/backend -n backend --replicas=5
+    kubectl scale statefulset/mongodb -n database --replicas=3
