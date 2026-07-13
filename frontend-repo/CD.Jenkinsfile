@@ -108,7 +108,8 @@ spec:
                             git checkout main
                             
                             git merge origin/DEV -X theirs -m "Merge branch 'DEV' into main with priority [skip ci]"
-                            
+                            git add .
+                            git commit -m "Merge branch 'DEV' into main with priority [skip ci]" || echo "Nothing to commit"
                             git push https://${GIT_USER}:${GIT_PASS}@github.com/${REPO_OWNER}/${REPO_NAME}.git main
                         '''
                     }
