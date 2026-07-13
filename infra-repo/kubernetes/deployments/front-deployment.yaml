@@ -17,7 +17,7 @@ spec:
         - name: nexus-pull-secret
       containers:
         - name: frontend
-          image: nexus.local/fe-img:69
+          image: nexus.local/fe-img:70
           imagePullPolicy: Always
           ports:
             - containerPort: 80
