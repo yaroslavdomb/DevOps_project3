@@ -1,0 +1,7 @@
+Create Docker 
+  cd F:\LERNING\__2025\DevOps\PROJECTS\p3_K8_JENKINS_ARGO_ELK\frontend-repo
+	docker build -t fe-img .
+	docker tag fe-img:latest nexus.local/fe-img:latest
+	
+  For K8
+    docker push nexus.local/fe-img:latest

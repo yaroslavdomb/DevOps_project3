@@ -1,0 +1,12 @@
+Create Docker 
+  cd F:\LERNING\__2025\DevOps\PROJECTS\p3_K8_JENKINS_ARGO_ELK\backend-repo
+	docker build -t be-img .
+	docker tag be-img:latest nexus.local/be-img:latest
+	
+  For K8
+    docker push nexus.local/be-img:latest
+
+
+start the BE:	
+  1) run the following command in folder of backend
+		npm run dev

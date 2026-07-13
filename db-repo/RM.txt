@@ -1,0 +1,30 @@
+USER CREATION
+
+    use finalProj
+
+    db.createUser({ user: "readerUser", pwd: "Qwertyy345", roles: [{ role: "read", db: "finalProj" }]})
+    db.createUser({ user: "writerUser", pwd: "Asdfghh789", roles: [{ role: "readWrite", db: "finalProj" }]})
+
+Create Docker 
+  cd F:\LERNING\__2025\DevOps\PROJECTS\p3_K8_JENKINS_ARGO_ELK\db-repo
+	
+  docker pull mongo:8
+	docker tag mongo:8 nexus.local/mongo:8
+	
+  docker pull mongo-express:1.0.2
+	docker tag mongo-express:1.0.2 nexus.local/mongo-express:1.0.2
+	
+  For K8
+    docker push nexus.local/mongo:8
+    docker push nexus.local/mongo-express:1.0.2
+
+Start as single docker:
+  docker rm -f mongo_fin_proj
+	docker run -d --name mongo_fin_proj -p 27017:27017 d343c378 mongod --replSet rs0 --bind_ip_all --port 27017
+	docker exec -it mongo_fin_proj mongosh --port 27017 --eval "rs.initiate({_id: 'rs0', members: [{_id: 0, host: 'localhost:27017'}]})"
+
+Test DB:
+		docker exec -it mongo_fin_proj mongosh --port 27017 --eval "rs.status().ok"
+			Expected 1 for normal 
+		docker exec -it mongo_fin_proj mongosh --port 27017 --eval "rs.status()"
+			Expected stateStr: 'PRIMARY' && name: '192.168.1.104:27017' (if ipconfig gave 192.168.1.104 as local IPv4)
