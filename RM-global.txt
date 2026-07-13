@@ -162,8 +162,8 @@ Link:
             "email": "jarik@example.com", 
             "hotelId": 0, 
             "hotelName": "Grand Horizon Resort", 
-            "checkInDate": "2026-07-02T14:30:00.000Z", 
-            "checkOutDate": "2026-07-10T19:15:00.000Z", 
+            "checkIn": "2026-07-02T14:30:00.000Z", 
+            "checkOut": "2026-07-10T19:15:00.000Z", 
             "additionalReq": "A really HUGE (!!!) bone for my small pitbully girl" 
         }
 
@@ -568,7 +568,7 @@ CHECK DIFF THINGS
     
     kubectl scale deployment/log-elasticsearch -n logging --replicas=1
     kubectl scale deployment/log-kibana -n logging --replicas=1
-    kubectl apply -f kubernetes/deployments/log-fluentbit-daemonset.yaml
+    kubectl apply -f kubernetes/deployments/log-fluent-daemonset.yaml
 
   APPLICATION DEV/FULL
     kubectl scale deployment/frontend -n frontend --replicas=1

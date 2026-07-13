@@ -39,8 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     email: email,
                     hotelId: hotelId,
                     hotelName: hotelName,
-                    checkInDate: checkin,
-                    checkOutDate: checkout,
+                    checkIn: checkin,
+                    checkOut: checkout,
                     additionalReq: additional
                 });
 
