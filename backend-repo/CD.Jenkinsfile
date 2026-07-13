@@ -99,11 +99,18 @@ spec:
                 container('git-tools') {
                     withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
                         sh '''
-                            curl -s -X PUT \
-                              -H "Authorization: token ${GIT_PASS}" \
-                              -H "Accept: application/vnd.github+json" \
-                              https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/pulls/${PR_NUMBER}/merge \
-                              -d "{\\"merge_method\\":\\"merge\\"}"
+                            git clone https://${GIT_USER}:${GIT_PASS}@github.com/${REPO_OWNER}/${REPO_NAME}.git repo-merge
+                            cd repo-merge
+                            git config user.name "p3_jenkins-ydomb_autoReviewer"
+                            git config user.email "p3_jenkins-ydomb_autoReviewer@local"
+                            
+                            git fetch origin main DEV
+                            git checkout main
+                            
+                            git merge origin/DEV -X theirs -m "Merge branch 'DEV' into main with priority [skip ci]" || true
+                            git add .
+                            git commit -m "Merge branch 'DEV' into main with priority [skip ci]" || echo "Nothing to commit"
+                            git push https://${GIT_USER}:${GIT_PASS}@github.com/${REPO_OWNER}/${REPO_NAME}.git main
                         '''
                     }
                 }
